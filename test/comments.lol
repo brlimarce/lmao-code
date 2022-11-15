@@ -4,7 +4,7 @@ TLDR
 HAI
   OBTW ALLOWED
   TLDR
-  I HAS A thing BTW YES
+  I HAS A thing
   I HAS A thing2 ITZ 3
 KTHXBYE
 OBTW
