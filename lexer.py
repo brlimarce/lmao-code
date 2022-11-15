@@ -7,10 +7,11 @@ import token_regex as tokex
 | Checks if the token matches the lexeme.
 
 * Parameters
-|
+| line(str): A line in the program.
 
 * Returns
-|
+| tuple: `boolean` indicates if success and `result`
+| contains a list of tokens.
 """
 def matching(line: str) -> tuple:
   # * Declaration
@@ -18,58 +19,15 @@ def matching(line: str) -> tuple:
 
   # Extract all tokens.
   result = []
-  print("🚀 ~ file: lexer.py ~ line 22 ~ line", line)
-  indices = [5, 49]
-  
-  # for idx in indices:
-  # line = re.split(lexemes[5][0], line)[1].strip()
-  # print(line)
-  # line = re.split(lexemes[49][0], line)
-  # print(line)
-  # while line != " " and line != "" and line != None:
-  #   is_match = False
-  #   print("🚀 ~ file: lexer.py ~ line 24 ~ line:", line + "|")
-  #   for i in range(len(lexemes)):
-  #     x = re.search(lexemes[i][0], line)
-  #     if x != None:
-  #       result.append({ x.group(0): lexemes[i][1] })
-  #       line = line[x.end():].strip()
-  #       is_match = True
-  #       break
-  #   if not is_match and (line != " " or line != "" or line != None):
-  #       return (False, line)
-    # print("Index:", i, lexemes[i][0], lexemes[i][1])
-  # valid = False
-
-  # Check if the token is valid.
-
-  # return valid
-
-	# valid = False
-	# with open("regex.txt","r") as data_file:
-	# 	for line in data_file:
-	# 		lexeme = line.strip()
-	# 		x = re.search(lexeme, token)
-	# 		if x != None:
-	# 			valid = True
-	# return valid
+  while line != " " and line != "" and line != None:
+    for i in range(len(lexemes)):
+      x = re.match(lexemes[i][0], line)
+      if x != None:
+        print("🚀 ~ file: lexer.py ~ line 25 ~ x", x)
+        result.append({ x.group(0): lexemes[i][1] })
+        line = line[x.end():].strip()
+        break
   return (True, result)
-
-"""
-* eval_statement()
-| Find the tokens of the WHOLE statement.
-| Otherwise, return an error.
-
-* Parameters
-| line (str): The line/statement of the program.
-
-* Returns
-| tuple (bool, list): `bool` indicates if there
-| were no errors. `list` is for the tokens.
-"""
-def eval_statement(line: str) -> tuple:
-  # Return the result.
-  return matching(line[:-1].strip())
 
 """
 * analyze()
@@ -93,8 +51,7 @@ def analyze(filename: str) -> dict:
     for line in program.readlines():
       line_count += 1
       try:
-        result = eval_statement(line) # Evaluate the statement
-        break
+        result = matching(line[:-1].strip()) # Evaluate the statement
         print("🚀 ~ file: lexer.py ~ line 85 ~ result", result, "\n")
         if result[0] == False:
           raise Exception(f"🚀 ~ Error at line {line_count} ~ {result[1]} does not exist.")
