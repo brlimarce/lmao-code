@@ -23,7 +23,11 @@ def matching(line: str) -> tuple:
     for i in range(len(lexemes)):
       x = re.match(lexemes[i][0], line)
       if x != None:
-        print("🚀 ~ file: lexer.py ~ line 25 ~ x", x)
+        # Disregard if BTW is read. (single comment)
+        # TODO: Catch in analyze function.
+        if x.group(0) == "BTW":
+          line = None # Disregard everything else after `BTW`.
+          break
         result.append({ x.group(0): lexemes[i][1] })
         line = line[x.end():].strip()
         break

@@ -47,19 +47,11 @@ token_regex = [
   (re.compile(r"\bWILE\b"), "while"),
   (re.compile(r"^IM OUTTA YR\b"), "loop-end"),
   (re.compile(r"\bAN\b"), "and "),
-<<<<<<< HEAD
-  # (re.compile(r"\b.*\b"), "string"),
-=======
   (re.compile(r"\"[\w!@#$%^&*()_+=-\[\]\\/.,;'{}| ]*\""), "string"),
->>>>>>> d9225464b6733a238dd2068db4076b3784437ccb
   (re.compile(r"\bA (NOOB|NUMBR|NUMBAR|YARN|TROOF)\b"), "typeliteral"),
   (re.compile(r"\b-?\d+\b"), "literal"),
   (re.compile(r"\b-?\d*\.\d+\b"), "literal"),
   (re.compile(r"\b\"[^\"]*\"\b"), "literal"),
   (re.compile(r"\b(WIN|FAIL)\b"), "literal"),
   (re.compile(r"^[A-Za-z][\w]*\b"), "var")
-<<<<<<< HEAD
 ]
-=======
-]
->>>>>>> d9225464b6733a238dd2068db4076b3784437ccb
