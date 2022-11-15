@@ -5,7 +5,6 @@
 
 <!-- Installation -->
 ## **Dependencies**
-- - -
 
 ### **A. Virtual Environment**
 - - -

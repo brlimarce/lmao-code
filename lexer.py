@@ -1,4 +1,5 @@
 from utility import constants as const
+from utility import helper
 import re
 import token_regex as tokex
 
@@ -28,7 +29,7 @@ def matching(line: str) -> tuple:
         if x.group(0) == "BTW":
           line = None # Disregard everything else after `BTW`.
           break
-        result.append({ x.group(0): lexemes[i][1] })
+        result.append((x.group(0), lexemes[i][1] ))
         line = line[x.end():].strip()
         break
   return (True, result)
@@ -56,15 +57,24 @@ def analyze(filename: str) -> dict:
       line_count += 1
       try:
         result = matching(line[:-1].strip()) # Evaluate the statement
-        print("🚀 ~ file: lexer.py ~ line 85 ~ result", result, "\n")
         if result[0] == False:
           raise Exception(f"🚀 ~ Error at line {line_count} ~ {result[1]} does not exist.")
+        
+        # Store and display the symbol table.
+        if result[1] != []:
+          symbol_table[line_count] = result[1] # Append the result.
+          # print("🚀 ~ file: lexer.py ~ line 85 ~ result", result, "\n")
       except Exception as e:
         print(e) # Print an error message.
-        return
+        return None
   # Return the symbol table.
   return symbol_table
 
 # * Main Program
 if __name__ == "__main__":
-  analyze("sample.lol")
+  # Analyze the program.
+  filename = "sample.lol"
+  symbol_table = analyze(filename)
+
+  # Display the symbol table.
+  helper.print_symbol_table(filename, symbol_table)
