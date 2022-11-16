@@ -48,7 +48,7 @@ token_regex = [
   (re.compile(r"\bWILE\b"), "Loop While"),
   (re.compile(r"^IM OUTTA YR\b"), "Loop End"),
   (re.compile(r"\bAN\b"), "Value Separator"),
-  (re.compile(r"\"[\w!@#$%^&*()_+=\-\[\]\\/.,;:'{}| ]*\""), "YARN Literal"),
+  (re.compile(r"\"[\w!@#$%^&*()_+=\-\[\]\?\\/.,;:'{}| ]*\""), "YARN Literal"),
   (re.compile(r"\bA (NOOB|NUMBR|NUMBAR|YARN|TROOF)\b"), "Type Literal"),
   (re.compile(r"\b-?\d*\.\d+\b"), "NUMBAR Literal"),
   (re.compile(r"\b-?\d+\b"), "NUMBR Literal"),
