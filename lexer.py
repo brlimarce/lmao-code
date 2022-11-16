@@ -32,7 +32,6 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
   lexemes = tokex.token_regex
   statement = cpy.deepcopy(line)
   idx = 0
-  case = -1
 
   # If statement that handles multi-line comments (when OBTW is found).
   if flag == True: # Comment flag
@@ -69,10 +68,9 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
         # `statement` is used to check for "dangling literals".
         if i == const.YARN_CASE_NUMBER:
           is_string_literal = True
-          result = validate_lexeme(x.group(0), line_number, idx, is_string_literal, result, i)
+          result = validate_lexeme(x.group(0), line_number, idx, is_string_literal, result)
         else:
           statement = statement.replace(x.group(0), merge(x.group(0)))
-          case = i
 
         # Append the result and cut the match off the line.
         result.append((x.group(0), lexemes[i][1]))
@@ -86,7 +84,7 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
     else:
       if not is_string_literal and not is_btw:
         # Check if the lexeme does not have dangling literals.
-        result = validate_lexeme(statement, line_number, idx, is_string_literal, result, case)
+        result = validate_lexeme(statement, line_number, idx, is_string_literal, result)
     idx += 1
   return ((True, False), result)
 
@@ -104,7 +102,7 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
 * Returns
 | list: The modified result
 """
-def validate_lexeme(statement: str, line_count: int, boundary: int, is_string_literal: bool, result: list, case_number: int) -> list:
+def validate_lexeme(statement: str, line_count: int, boundary: int, is_string_literal: bool, result: list) -> list:
   # * Declaration
   statement = [s for s in statement.split() if s != '"'] if not is_string_literal else statement.strip()
   boundary = boundary if not is_string_literal else 0
