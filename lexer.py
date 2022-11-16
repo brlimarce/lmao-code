@@ -107,7 +107,6 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
 def validate_lexeme(statement: str, line_count: int, boundary: int, is_string_literal: bool, result: list, case_number: int) -> list:
   # * Declaration
   statement = [s for s in statement.split() if s != '"'] if not is_string_literal else statement.strip()
-  print("STatement:", statement)
   boundary = boundary if not is_string_literal else 0
   error_message = f"🚀 ~ Error at line {line_count} ~ {statement[boundary] if not is_string_literal else statement} does not exist."
 
@@ -163,7 +162,7 @@ def analyze(filename: str) -> dict:
 # * Main Program
 if __name__ == "__main__":
   # Analyze the program.
-  filename = "sample.lol"
+  filename = "programs/arith.lol"
   symbol_table = analyze(filename)
   
   # Display the symbol table.
