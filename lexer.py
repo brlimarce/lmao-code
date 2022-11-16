@@ -30,12 +30,17 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
   # Extract all tokens.
   result = []
   while line != " " and line != "" and line != None:
+    # Flag for indicating the match.
+    is_match_found = False
+
+    # Run through the line.
     for i in range(len(lexemes)):
       x = re.match(lexemes[i][0], line)
       if x != None:
         # Disregard if BTW is read (Single Comment).
         if x.group(0) == "BTW":
           line = None # Disregard everything else after `BTW`.
+          is_match_found = True
           break
         if x.group(0) == "OBTW":
           if result == []:
@@ -45,7 +50,12 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
             raise Exception(f"🚀 ~ Error at line {line_number} ~ OBTW/TLDR are misplaced.")
         result.append((x.group(0), lexemes[i][1]))
         line = line[x.end():].strip()
+        is_match_found = True
         break
+    
+    # If there is no match, raise an error.
+    if not is_match_found:
+      return ((False, False), line)
   return ((True, False), result)
 
 """
@@ -89,8 +99,9 @@ def analyze(filename: str) -> dict:
 # * Main Program
 if __name__ == "__main__":
   # Analyze the program.
-  filename = "sample.lol"
-  symbol_table = analyze(filename)
+  filename = "variables.lol"
+  symbol_table = analyze("programs/"+ filename)
+  # symbol_table = analyze(filename)
   
   # Display the symbol table.
   if symbol_table != None:
