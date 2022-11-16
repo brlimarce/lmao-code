@@ -1,3 +1,4 @@
+from utility import constants as const
 import re
 
 token_regex = [
@@ -47,10 +48,12 @@ token_regex = [
   (re.compile(r"\bWILE\b"), "Loop While"),
   (re.compile(r"^IM OUTTA YR\b"), "Loop End"),
   (re.compile(r"\bAN\b"), "Value Separator"),
-  (re.compile(r"\"[^\"]*\""), "YARN Literal"),
+  (re.compile(r"\"[\w!@#$%^&*()_+=-\[\]\\/.,;:'{}| ]*\""), "YARN Literal"),
   (re.compile(r"\bA (NOOB|NUMBR|NUMBAR|YARN|TROOF)\b"), "Type Literal"),
   (re.compile(r"\b-?\d*\.\d+\b"), "NUMBAR Literal"),
   (re.compile(r"\b-?\d+\b"), "NUMBR Literal"),
   (re.compile(r"\b(WIN|FAIL)\b"), "TROOF iteral"),
-  (re.compile(r"^[A-Za-z][\w]*\b"), "Identifier")
+  (re.compile(r"^[A-Za-z][\w]*"), "Identifier")
 ]
+
+accepted_chars = [const.UNDERSCORE, ".", "?"]
