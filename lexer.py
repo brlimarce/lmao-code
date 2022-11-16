@@ -160,7 +160,7 @@ def analyze(filename: str) -> dict:
 # * Main Program
 if __name__ == "__main__":
   # Analyze the program.
-  filename = "sample.lol"
+  filename = "comments.lol"
   symbol_table = analyze(filename)
   
   # Display the symbol table.

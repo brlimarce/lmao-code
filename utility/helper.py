@@ -19,16 +19,15 @@ def print_symbol_table(filename: str, symbol_table: dict):
   console.print(Panel.fit(
     Padding('''[white]
       📁  [bold yellow]Filename:[/] {0}
-      💻  [bold blue]Number of Lines:[/] {1}
-    '''.format(filename, len(symbol_table.keys())), (0, 6, 0, 0)),
+    '''.format(filename), (0, 6, 0, 0)),
 
-    title='[bold]✅ Lexical Analyzer[/bold]', 
+    title='[bold]🐱 Lexical Analyzer[/bold]', 
     subtitle='- = -', 
-    style='green'
+    style='yellow'
   ))
 
   # Create the table and its columns.
-  table = Table(title="\nSymbol Table", header_style="bold yellow", border_style="bold yellow", title_style="bold italic yellow")
+  table = Table(title="\nSymbol Table", header_style="bold yellow", border_style="bold blue", title_style="bold italic blue")
   table.add_column("Lexeme", justify="left", style="bold green", no_wrap=True)
   table.add_column("Type", justify="left", style="bold", no_wrap=True)
 
