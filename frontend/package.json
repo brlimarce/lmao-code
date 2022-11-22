@@ -11,9 +11,6 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@uiw/codemirror-extensions-langs": "^4.15.1",
-    "@uiw/codemirror-theme-atomone": "^4.15.1",
-    "@uiw/react-codemirror": "^4.15.1",
     "codemirror": "^6.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -47,7 +44,6 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^8.28.0",
     "eslint-plugin-react": "^7.31.11",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",

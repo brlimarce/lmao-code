@@ -23,6 +23,6 @@
 
 body {
   background: var(--amber-50);
-  color: var(--black);
+  /* color: var(--black); */
   user-select: none;
 }

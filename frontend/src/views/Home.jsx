@@ -20,14 +20,37 @@ import FileUploadIcon from '@mui/icons-material/FileUpload'
 import ClearIcon from '@mui/icons-material/Clear'
 import CategoryIcon from '@mui/icons-material/Category'
 import CssBaseline from '@mui/material/CssBaseline'
-
-import CodeMirror from '@uiw/react-codemirror'
-import { atomone } from '@uiw/codemirror-theme-atomone'
-import { javascript } from '@codemirror/lang-javascript'
+import { useEffect } from 'react'
 
 export default function Home() {
   const [code, setCode] = React.useState('')
   const imgSize = '112rem'
+
+  // Handle the upload of program file.
+  const handleUpload = async (e) => {
+    // Prevent from refreshing.
+    e.preventDefault()
+
+    // Read the contents of the file.
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const text = e.target.result
+      setCode(text)
+      document.getElementById('code').value = text
+    }
+
+    reader.readAsText(e.target.files[0])
+  }
+
+  useEffect(() => {
+    CodeMirror.fromTextArea(document.getElementById('code'), {
+      value: code,
+      lineNumbers: true,
+      continueComments: 'Enter',
+      theme: 'ayu-dark',
+      textWrapping: true,
+    })
+  }, [code])
 
   return (
     <ThemeProvider theme={appTheme}>
@@ -78,13 +101,7 @@ export default function Home() {
         <Grid item xs={5}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             {/* Start of Editor */}
-            <CodeMirror
-              value={code}
-              onChange={(value) => setCode(value)}
-              height="320px"
-              extensions={[javascript({ jsx: true })]}
-              theme={atomone}
-            />
+            <textarea id="code" name="code" value={code}></textarea>
             {/* End of Editor */}
 
             {/* Start of Toolbar */}
@@ -99,6 +116,7 @@ export default function Home() {
               <Button
                 variant="outlined"
                 color="info"
+                component="label"
                 startIcon={<FileUploadIcon />}
                 sx={{
                   marginRight: '1rem',
@@ -108,13 +126,21 @@ export default function Home() {
                 fullWidth
               >
                 Upload Program
+                {/* Input Field */}
+                <input
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    handleUpload(e)
+                  }}
+                />
               </Button>
 
               <Button
                 variant="outlined"
                 color="error"
                 startIcon={<ClearIcon />}
-                onClick={() => setCode('')}
+                onClick={() => (document.getElementById('code').value = '')}
                 sx={{
                   marginRight: '1rem',
                   fontWeight: 700,
@@ -150,7 +176,8 @@ export default function Home() {
                 color: 'var(--black)',
               }}
             >
-              &#62;&#62; <span style={{ color: 'var(--orange-900)' }}>Terminal</span>
+              &#62;&#62;{' '}
+              <span style={{ color: 'var(--orange-900)' }}>Terminal</span>
             </Typography>
 
             <TextField
