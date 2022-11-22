@@ -1,0 +1,29 @@
+/**
+ * * Theme
+ * Setting up some defaults that
+ * can't be changed in MUI.
+ */
+:root {
+  --orange-50: #fff3e0;
+  --orange-100: #ffe0b2;
+  --orange-200: #ffcc80;
+  --orange-300: #ffb74d;
+  --orange-400: #ffa726;
+  --orange-500: #ff9800;
+  --orange-600: #fb8c00;
+  --orange-700: #f57c00;
+  --orange-800: #ef6c00;
+  --orange-900: #e65100;
+
+  --amber-50: #fff8e1;
+  --black: #121212;
+  --light-grey: #a3a3a3;
+  --grey: #616161;
+  --white: #fefefe;
+}
+
+body {
+  background: var(--amber-50);
+  /* color: var(--black); */
+  user-select: none;
+}

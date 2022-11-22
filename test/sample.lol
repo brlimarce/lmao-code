@@ -1,1 +1,0 @@
-I HAS A thing2 ITZ SUM OF 3 AN SUM OF 3 AN 5
