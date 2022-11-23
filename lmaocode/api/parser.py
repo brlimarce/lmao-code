@@ -1,6 +1,7 @@
 from api.utility import syntax_storage as syntax
 from api.utility import constants as const
 
+# CYK Parsing Algorithm
 def cykParse(lex, R):
     n = len(lex)
 

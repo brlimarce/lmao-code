@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "react-simple-code-editor": "^0.13.1",
-    "react-syntax-highlighter": "^15.5.0"
-  }
-}
