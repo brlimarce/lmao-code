@@ -41,6 +41,7 @@ export default function CodeEditor({
         textareaId={id}
         className="editor"
         readOnly={readOnly}
+        placeholder={isTerminal? "" : "BTW enter your LOLCODE or upload a file..."}
         style={{
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 18,

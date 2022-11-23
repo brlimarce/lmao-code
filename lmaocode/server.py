@@ -7,6 +7,7 @@
 """
 from flask import Flask, request
 from api import lexer
+from api import parser
 from api.utility import constants as const
 
 # Initialize Flask app.
@@ -20,7 +21,8 @@ app = Flask(__name__)
 """
 @app.route("/start")
 def main():
-  starter_code = "BTW edit this code or upload a file!\nHAI\n  VISIBLE \"Hello World!\"\nKTHXBYE\n"
+  # starter_code = "BTW edit this code or upload a file!\nHAI\n  VISIBLE \"Hello World!\"\nKTHXBYE\n"
+  starter_code = ""
   return {
     "program": starter_code
   }
@@ -44,11 +46,16 @@ def interpret():
 
   # * Lexical Analysis
   res = lexer.analyze(code)
+  
+  # * Syntax Analysis
+  parse_res = parser.parse(res[1])
 
   # TODO: Error handling for GUI.
   return {
-    "payload": res[1],
-    "success": res[0]
+    "lexical_success": res[0],
+    "lexemes": res[1],
+    "syntax_success": parse_res[0],
+    "payload": parse_res[1],
   }
 
 """

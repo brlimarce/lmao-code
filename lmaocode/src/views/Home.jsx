@@ -24,9 +24,12 @@ import TerminalIcon from '@mui/icons-material/Terminal'
 
 export default function Home() {
   const [code, setCode] = React.useState({ program: '' })
-  const [success, setSuccess] = React.useState(false)
+  const [isLexical, setLexical] = React.useState(false)
+  const [isSyntactical, setSyntactical] = React.useState(false)
   const [lexemes, setLexemes] = React.useState()
-  const [error, setError] = React.useState('')
+
+  const [lexicalError, setLexicalError] = React.useState('')
+  const [syntaxError, setSyntaxError] = React.useState('')
 
   const imgSize = '112rem'
 
@@ -68,15 +71,24 @@ export default function Home() {
       res.json().then((data) => {
         console.log(data)
         // Store if interpretation is successful.
-        setSuccess(Boolean(data['success']))
+        setLexical(Boolean(data['lexical_success']))
+        setSyntactical(Boolean(data['syntax_success']))
 
         // Store the corresponding data.
-        if (success) {
-          setLexemes(data['payload'])
-          setError('')
+        if (isLexical) {
+          setLexemes(data['lexemes'])
+          setLexicalError('')
+          setSyntaxError('')
         } else {
-          setError(data['payload'])
-          setLexemes([])
+          setLexemes('')
+          setLexicalError(data['lexemes'])
+          setSyntaxError('')
+        }
+
+        if (!isSyntactical) {
+          setSyntaxError(data['payload'])
+        } else {
+          setSyntaxError('')
         }
       })
     })
@@ -202,7 +214,13 @@ export default function Home() {
             </Typography>
 
             <CodeEditor
-              code={!success && error ? error : ''}
+              code={
+                !isLexical && lexicalError
+                  ? lexicalError
+                  : !isSyntactical && syntaxError
+                  ? syntaxError
+                  : ''
+              }
               handleValueChange={() => {}}
               id="terminal"
               isTerminal
@@ -230,7 +248,8 @@ export default function Home() {
 
                 {/* Start of Table Body */}
                 <TableBody>
-                  {success && lexemes &&
+                  {isLexical &&
+                    lexemes &&
                     Object.entries(lexemes).map((entry) => {
                       return entry[1].map((lex) => {
                         return (

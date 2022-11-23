@@ -14,3 +14,4 @@ UNDERSCORE = "_"
 # * Error Messages
 INVALID_TOKEN = "Invalid Token"
 MISPLACED_OBTW = "OBTW/TLDR are misplaced."
+SYNTAX_ERROR = "Syntax Error"
