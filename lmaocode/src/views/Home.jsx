@@ -24,8 +24,9 @@ import TerminalIcon from '@mui/icons-material/Terminal'
 
 export default function Home() {
   const [code, setCode] = React.useState({ program: '' })
-  const [output, setOutput] = React.useState('')
+  const [success, setSuccess] = React.useState(false)
   const [lexemes, setLexemes] = React.useState()
+  const [error, setError] = React.useState('')
 
   const imgSize = '112rem'
 
@@ -65,8 +66,18 @@ export default function Home() {
       body: JSON.stringify({ program: code }),
     }).then((res) => {
       res.json().then((data) => {
-        setLexemes(data.symbol_table)
-        console.log(lexemes)
+        console.log(data)
+        // Store if interpretation is successful.
+        setSuccess(Boolean(data['success']))
+
+        // Store the corresponding data.
+        if (success) {
+          setLexemes(data['payload'])
+          setError('')
+        } else {
+          setError(data['payload'])
+          setLexemes([])
+        }
       })
     })
   }
@@ -191,7 +202,7 @@ export default function Home() {
             </Typography>
 
             <CodeEditor
-              code={output}
+              code={!success && error ? error : ''}
               handleValueChange={() => {}}
               id="terminal"
               isTerminal
@@ -219,7 +230,7 @@ export default function Home() {
 
                 {/* Start of Table Body */}
                 <TableBody>
-                  {lexemes &&
+                  {success && lexemes &&
                     Object.entries(lexemes).map((entry) => {
                       return entry[1].map((lex) => {
                         return (

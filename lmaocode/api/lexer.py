@@ -26,7 +26,7 @@ def merge(match: str):
 | tuple: `boolean` indicates if success and `result`
 | contains a list of tokens.
 """
-def matching(line: str, line_number: int, flag: bool) -> tuple:
+def matching(line: str, flag: bool) -> tuple:
   # * Declaration
   lexemes = tokex.token_regex
   statement = cpy.deepcopy(line)
@@ -62,12 +62,12 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
           # For OBTW, it has to exist by itself. If it's found with other lexemes, raise an error.
             return ((True, True), None)
           else:
-            raise Exception(f"🚀 ~ Error at line {line_number} ~ OBTW/TLDR are misplaced.")
+            raise Exception(const.MISPLACED_OBTW)
         
         # `statement` is used to check for "dangling literals".
         if i == const.YARN_CASE_NUMBER:
           is_string_literal = True
-          result = validate_lexeme(x.group(0), line_number, idx, is_string_literal, result)
+          result = validate_lexeme(x.group(0), idx, is_string_literal, result)
         else:
           statement = statement.replace(x.group(0), merge(x.group(0)))
 
@@ -83,7 +83,7 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
     else:
       if not is_string_literal and not is_btw:
         # Check if the lexeme does not have dangling literals.
-        result = validate_lexeme(statement, line_number, idx, is_string_literal, result)
+        result = validate_lexeme(statement, idx, is_string_literal, result)
     idx += 1
   return ((True, False), result)
 
@@ -101,11 +101,11 @@ def matching(line: str, line_number: int, flag: bool) -> tuple:
 * Returns
 | list: The modified result
 """
-def validate_lexeme(statement: str, line_count: int, boundary: int, is_string_literal: bool, result: list) -> list:
+def validate_lexeme(statement: str, boundary: int, is_string_literal: bool, result: list) -> list:
   # * Declaration
   statement = [s for s in statement.split() if s != '"'] if not is_string_literal else statement.strip()
   boundary = boundary if not is_string_literal else 0
-  error_message = f"🚀 ~ Error at line {line_count} ~ {statement[boundary] if not is_string_literal else statement} does not exist."
+  error = f"{const.INVALID_TOKEN} ~ {statement[boundary] if not is_string_literal else statement} does not exist."
 
   if not is_string_literal:
     # Disregard comments.
@@ -115,7 +115,7 @@ def validate_lexeme(statement: str, line_count: int, boundary: int, is_string_li
       statement[boundary] = " ".join(statement[boundary].split(const.UNDERSCORE))
       for c in statement[boundary]:
         if not c.isalnum() and not c.isspace() and c not in tokex.accepted_chars:
-          raise Exception(error_message)
+          raise Exception(f"{error}")
   return result
 
 """
@@ -124,44 +124,32 @@ def validate_lexeme(statement: str, line_count: int, boundary: int, is_string_li
 | a given program.
 
 * Parameters
-| filename (str): The file with .lol extension.
+| code (list): A list of the program's lines
 
 * Returns
 | dict: The symbol table. `key` is line number
 | and `value` is the list of tokens.
 """
-def analyze(filename: str) -> dict:
+def analyze(code: list) -> dict:
   # * Declaration
   symbol_table = {}
   line_count = 0 # The line number.
   comment_flag = False
   
   # Evaluate the program.
-  with open("api/" + const.TEST_DIR + filename, "r") as program:
-    for line in program.readlines():
-      line_count += 1
-      try:
-        result = matching(line[:-1].strip(), line_count, comment_flag) # Evaluate the statement.
-        if result[0][0] == False:
-          raise Exception(f"🚀 ~ Error at line {line_count} ~ {result[1]} does not exist.")
-        else:
-          comment_flag = result[0][1]
-        
-          # Append the result.
-          if result[1] != None:
-            symbol_table[line_count] = result[1]
-      except Exception as e:
-        print(e) # Print an error message.
-        return None
+  for line in code:
+    line_count += 1
+    try:
+      result = matching(line, comment_flag) # Evaluate the statement.
+      if result[0][0] == False:
+        return (False, f"~ Line {line_count}: {const.INVALID_TOKEN}: {result[1]}")
+      else:
+        comment_flag = result[0][1]
+      
+        # Append the result.
+        if result[1] != None:
+          symbol_table[line_count] = result[1]
+    except Exception as e:
+      return (False, f'"~ Line {line_count}: {e}')
   # Return the symbol table.
-  return symbol_table
-
-# * Main Program
-if __name__ == "__main__":
-  # Analyze the program.
-  filename = "01_variables.lol"
-  symbol_table = analyze(filename)
-  
-  # Display the symbol table.
-  if symbol_table != None:
-    print(symbol_table)
+  return (True, symbol_table)

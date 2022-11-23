@@ -2,6 +2,7 @@ import Editor from 'react-simple-code-editor'
 import { highlight, languages } from 'prismjs/components/prism-core'
 import 'prismjs/components/prism-lolcode'
 import 'prismjs/themes/prism.css'
+import language from 'react-syntax-highlighter/dist/esm/languages/hljs/1c'
 
 export default function CodeEditor({
   code,
@@ -29,12 +30,13 @@ export default function CodeEditor({
         height: '60vh',
         overflow: 'auto',
         backgroundColor: 'var(--black)',
+        paddingTop: isTerminal? '1rem': '0rem'
       }}
     >
       <Editor
         value={code}
         onValueChange={handleValueChange}
-        highlight={(code) => hightlightWithLineNumbers(code, languages.lolcode)}
+        highlight={(code) => hightlightWithLineNumbers(code, isTerminal? languages.text : languages.lolcode)}
         padding={10}
         textareaId={id}
         className="editor"

@@ -27,8 +27,7 @@ def main():
 
 """
 * Interpreter
-| Processes the compilation
-| of LOLCODE.
+| Processes the compilation of LOLCODE.
 
 * Parameters
 | program (str): Lines of code separated by newline
@@ -39,19 +38,32 @@ def main():
 """
 @app.route("/interpret", methods=["POST"])
 def interpret():
-  # Write the response in an input file.
+  # Clean the data for analysis.
   code = (request.json["program"])["program"]
-  with open("api/" + const.TEST_DIR + "input" + const.FILE_EXT, "w") as outfile:
-    outfile.writelines(code)
+  code = clean_code(code.split("\n"))
 
-  # Apply lexical analysis.
-  symbol_table = lexer.analyze("input" + const.FILE_EXT)
+  # * Lexical Analysis
+  res = lexer.analyze(code)
 
   # TODO: Error handling for GUI.
   return {
-    "symbol_table": symbol_table,
-    "success": True
+    "payload": res[1],
+    "success": res[0]
   }
+
+"""
+* clean_code()
+| A utility function to clean
+| the program.
+
+* Parameters
+| program (list): Lines of code split by a newline
+
+* Returns
+| list: A clean set of program lines.
+"""
+def clean_code(program: list) -> list:
+  return [program[i].strip() for i in range(len(program)) if program[i] != '']
 
 # Run the app.
 if __name__ == "__main__":
