@@ -1,4 +1,7 @@
-BTW edit this code or upload a file!
+OBTW
+  THIS IS VALID
+TLDR
 HAI
-  VISIBLE "Hello World!"
+  VISIBLE ""
+  I HAS A thing ITZ 2 BTW THIS IS GOOD
 KTHXBYE

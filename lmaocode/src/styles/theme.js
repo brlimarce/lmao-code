@@ -6,10 +6,7 @@
 import { createTheme } from '@mui/material/styles'
 import { orange } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
-import {
-  TableCell,
-  tableCellClasses,
-} from '@mui/material'
+import { TableCell, tableCellClasses } from '@mui/material'
 
 // * General
 const appTheme = createTheme({
@@ -22,7 +19,7 @@ const appTheme = createTheme({
   },
 
   multilineColor: {
-    color: 'white'
+    color: 'white',
   }
 })
 
@@ -38,7 +35,7 @@ const StyledTableCell = styled(TableCell)(() => ({
   },
   [`&.${tableCellClasses.body}`]: {
     textAlign: 'center',
-    fontWeight: 500
+    fontWeight: 500,
   },
 }))
 

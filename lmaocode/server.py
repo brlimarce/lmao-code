@@ -6,9 +6,8 @@
 | URL: http://localhost:5000/
 """
 from flask import Flask, request
-from api import lexer
+from api.lexer import Lexer
 from api import parser
-from api.utility import constants as const
 
 # Initialize Flask app.
 app = Flask(__name__)
@@ -45,7 +44,8 @@ def interpret():
   code = clean_code(code.split("\n"))
 
   # * Lexical Analysis
-  res = lexer.analyze(code)
+  lexer = Lexer(code)
+  res = lexer.analyze()
   
   # * Syntax Analysis
   parse_res = parser.parse(res[1])

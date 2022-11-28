@@ -30,7 +30,8 @@ export default function CodeEditor({
         height: '60vh',
         overflow: 'auto',
         backgroundColor: 'var(--black)',
-        paddingTop: isTerminal? '1rem': '0rem'
+        padding: '1rem',
+        borderRadius: '0.4rem'
       }}
     >
       <Editor

@@ -32,6 +32,7 @@ export default function Home() {
   const [syntaxError, setSyntaxError] = React.useState('')
 
   const imgSize = '112rem'
+  const tableHeight = '28rem'
 
   // Fetch the starter code from the server.
   React.useEffect(() => {
@@ -234,7 +235,7 @@ export default function Home() {
         <Grid item xs={4.5}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             {/* Start of Lexer Table */}
-            <TableContainer component={Paper} sx={{ height: '36rem' }}>
+            <TableContainer component={Paper} sx={{ height: tableHeight }}>
               <Table>
                 {/* Start of Column Names */}
                 <TableHead>
@@ -270,7 +271,7 @@ export default function Home() {
             {/* Start of Semantics Table */}
             <TableContainer
               component={Paper}
-              sx={{ marginTop: '4rem', height: '24rem' }}
+              sx={{ marginTop: '2rem', height: tableHeight }}
             >
               <Table>
                 {/* Start of Column Names */}
