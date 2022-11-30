@@ -1,7 +1,17 @@
 OBTW
-  THIS IS VALID
+HA HA HA
 TLDR
+
 HAI
-  VISIBLE ""
-  I HAS A thing ITZ 2 BTW THIS IS GOOD
+  I HAS A var ITZ 2 BTW I'm allowed!
+
+  OBTW
+  HA HA HA
+
+  BTW am also allowed!
+  var IS NOW A NUMBAR
 KTHXBYE
+
+OBTW
+HA HA HA
+TLDR

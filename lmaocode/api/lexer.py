@@ -1,5 +1,7 @@
 from api.utility import constants as const
 from api.utility import token_regex as tokex
+# from utility import constants as const
+# from utility import token_regex as tokex
 import re
 
 """
@@ -114,8 +116,22 @@ class Lexer:
       symbol_table = {}
       for i in range(len(self._program)):
         result = self.find_match(i + 1, self._program[i])
-        symbol_table[i + 1] = result
+        
+        # Disregard empty results (i.e. comments).
+        if result != []:
+          symbol_table[i + 1] = result
       return (True, symbol_table)
     except Exception as e:
       # Return the error thrown.
       return (False, str(e))
+
+if __name__ == '__main__':
+  code = []
+  # * NOTE: Replace `01_variables.lol` with your file name.
+  with open('test/input.lol', 'r') as infile:
+    for line in infile.readlines():
+      code.append(line[:-1].strip())
+  
+  # Instantiate the lexer.
+  lexer = Lexer(code)
+  print(lexer.analyze())
