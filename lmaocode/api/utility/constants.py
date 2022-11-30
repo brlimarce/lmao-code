@@ -9,6 +9,8 @@ FILE_EXT = '.lol'
 
 # * Lexer Constants
 UNDERSCORE = "_"
+SPACE = " "
+
 ARITHMETIC_OP = "Arithmetic Operator"
 BOOLEAN_OP = "Boolean Operator"
 COMPARISON_OP = "Comparison Operator"

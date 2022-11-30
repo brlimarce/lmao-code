@@ -25,7 +25,7 @@ class Lexer:
   | token (str): The invalid token
   """
   def raise_error(self, line_number: int, token: str):
-    return f"~ Error on Line {line_number}: {token} is an invalid token."
+    return f"🚀 ~ Error on Line {line_number}: {token} is an invalid token."
 
   """
   * find_match()
@@ -52,8 +52,16 @@ class Lexer:
             line = const.EMPTY_STRING
             break
 
+          # Replace the space delimiter of keywords with multiple
+          # words into underscores.
+          token = match.group(0)
+          if const.SPACE in match.group(0):
+            new_token = const.UNDERSCORE.join(match.group(0).split(const.SPACE))
+            line = line.replace(token, new_token)
+            token = new_token
+
           # Append the match to the result
-          result.append((match.group(0), lex[2]))
+          result.append((token, lex[2]))
 
           # Catch SINGLE comments.
           if lex[2] == const.BTW_KEYWORD:
@@ -71,7 +79,7 @@ class Lexer:
             self._multiline_flag = False
 
           # Catch YARN literals.
-          if lex[2] != const.YARN_LITERAL and match.group(0) not in line.split(" "):
+          if lex[2] != const.YARN_LITERAL and token not in line.split(const.SPACE):
             raise Exception(self.raise_error(line_number, line))
           line = self.remove_match(line, match.start(), match.end())
           break
@@ -110,4 +118,4 @@ class Lexer:
       return (True, symbol_table)
     except Exception as e:
       # Return the error thrown.
-      return (False, e)
+      return (False, str(e))
