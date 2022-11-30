@@ -59,11 +59,11 @@ token_regex = [
   (re.compile(r"^IM OUTTA YR\b"), "loop end", "End of Loop"),
   # (re.compile(r"\"[\w!@#$%^&*()_+=-\[\]\\/.,;'{}| ]*\""), "YARN", "YARN Literal"), # TODO: Fix this REGEX.
   (re.compile(r"\bAN\b"), "an", "Delimiter for Nested Expressions"),
-  (re.compile(r"\bA\b"), "a", "Delimiter for Typecasting"),
   (re.compile(r"\"[^\"]*\""), "YARN", const.YARN_LITERAL),
   (re.compile(r"\b-?\d*\.\d+\b"), "NUMBAR", "NUMBAR Literal"),
   (re.compile(r"\b-?\d+\b"), "literal", "NUMBR Literal"),
   (re.compile(r"\b(WIN|FAIL)\b"), "TROOF", "TROOF Literal"),
+  (re.compile(r"\b(NOOB|NUMBR|NUMBAR|YARN|TROOF)\b"), "type literal", "TYPE Literal"),
+  (re.compile(r"\bA\b"), "a", "Delimiter for Typecasting"),
   (re.compile(r"^[A-Za-z][\w]*\b"), "identifier", "Identifier"),
-  (re.compile(r"\bA (NOOB|NUMBR|NUMBAR|YARN|TROOF)\b"), "type literal", "TYPE Literal"),
 ]
