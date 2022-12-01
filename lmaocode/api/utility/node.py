@@ -79,6 +79,7 @@ class Node:
     # * Declaration
     stack = deque([])
     visited = [] # Indicates the visited node
+    parent = None
     
     # Append the root node.
     visited.append(self)
@@ -97,6 +98,11 @@ class Node:
       # TOS is a parent node with children.
       else:
         parent = stack[len(stack) - 1]
+
+      # Avoid traversal for parents with
+      # no children.
+      if parent == None:
+        break
       
       # Store children from left to right.
       for i in range(0, len(parent.children)):
