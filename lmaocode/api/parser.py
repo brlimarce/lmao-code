@@ -1,80 +1,90 @@
-from api.utility import syntax_storage as syntax
-from api.utility import constants as const
+import lexer
+from utility import syntax_storage as grammar
+from utility.node import Node
 
-# CYK Parsing Algorithm
-def cykParse(lex, R):
-    n = len(lex)
+def parse(lex):
+    # * Declaration
+    handle_comments = grammar.comments(lex)
+    root_node = None # Root Node
 
-    # Initialize the table
-    T = [[set([]) for j in range(n)] for i in range(n)]
- 
-    # Filling in the table
-    for j in range(0, n):
-        # Iterate over the rules
-        for lhs, rule in R.items():
-            for rhs in rule:   
-                # If a terminal is found
-                if len(rhs) == 1 and \
-                rhs[0] == lex[j]:
-                    T[j][j].add(lhs)
-        for i in range(j, -1, -1):  
-        #     # Iterate over the range i to j + 1  
-            for k in range(i, j + 1):    
-        #         # Iterate over the rules
-                for lhs, rule in R.items():
-                    for rhs in rule:
-                        # If a terminal is found
-                        if(k==(n-1)):
-                            if len(rhs) == 2 and \
-                            rhs[0] in T[i][k] and \
-                            rhs[1] in T[k][j]:
-                                T[i][j].add(lhs)
-                        else:
-                            if len(rhs) == 2 and \
-                            rhs[0] in T[i][k] and \
-                            rhs[1] in T[k+1][j]:
-                                T[i][j].add(lhs)      
+    #error in comments
+    if handle_comments[0] == False:
+        # print error
+        print(handle_comments[1])
 
-    # If word can be formed by rules
-    # of given grammar
-    if len(T[0][n-1]) != 0:
-        return (True, T)
+    # no error in comments: parse the program
     else:
-        return (False, T)
+        lex = handle_comments[1]
+        program = grammar.program_start(lex)
 
-def merge(row: list) -> list:
-  lex = []
-  for i in row:
-    lex.append(i[1])
-  return lex
+        # error in program start
+        if program[0] == False:
+            # print the error
+            print(program[1])
 
-def parse(symbol_table) -> tuple:
-    # Define the rules.
-    rules = [syntax.Rprint, syntax.Rvardeclaration, syntax.Rcomparison, syntax.Rtypecasting, syntax.Rconcat, syntax.Rassignment, syntax.Rloop, syntax.Rswitch, syntax.Rinput, syntax.Rifthen]
-    terminal = syntax.terminal
-    non_terminal = syntax.non_terminal
-    line_count = 0
-
-    # Concatenate lexemes in table.
-    try:
-      for k in symbol_table:
-        line_count = k
-        lex = merge(symbol_table[k])
-        if lex == '': # Comments
-          continue
-
-        if k == 1 or k == len(symbol_table):
-          # Check for HAI and KTHXBYE.
-          if k == 1 and (len(lex) != 1 or lex[0] != "hai"):
-            return (False, f"~ {const.SYNTAX_ERROR} at Line {k}: No HAI keyword")
-          if k == len(symbol_table) and (len(lex) != 1 or lex[0] != "kthxbye"):
-            return (False, f"~ {const.SYNTAX_ERROR} at Line {k}: No KTHXBYE keyword")
+        # no error in program start: iterate through the statements
         else:
-          for rule in rules:
-            res = cykParse(lex, rule)
-            if res[0] == True:
-              break
-      payload = None if res[0] == True else f"~ {const.SYNTAX_ERROR} at Line {line_count}"
-      return (res[0], payload)
-    except Exception as e:
-      return (False, f'"~ Error at Line {line_count}: {e}')
+            # Add the root node.
+            root_node = Node(None, None, "HAI", "Program Start")
+
+            lex = program[1]
+            statement = grammar.statement(lex)
+
+            # error in the statement
+            if (statement[0]) == False:
+                # print the error
+                print(statement[1])
+
+            # no error: check if the lex is empty which means that the whole program is parsed
+            else:
+                # check the length of the lex list
+                lex = statement[1]
+                recursion = False
+
+                # if not empty: perform recursion in statement function
+                if len(lex) != 0:
+                    recursion = True
+                # loop while lex is not empty
+                while (recursion):
+                    mult_statement = grammar.statement(lex)
+
+                    # error: print error; break the loop
+                    if (mult_statement[0] == False):
+                        print(mult_statement[1])
+                        break
+                    else:
+                        # no error: check for the len of lex; update the lex
+                        # if lex is empty: parsing is done and successful; end the loop
+                        # else empty: continue with the loop
+                        lex = mult_statement[1]
+                        if len(lex) == 0:
+                            print("Parsed Successfully")
+                            recursion = False
+                            return root_node
+                # else empty: parsing done and successful
+                else:
+                    print("Parsed Successfully")
+                    print(lex)
+                    return root_node
+
+# Main Program
+if __name__ == "__main__":
+    code = []
+    with open("test/input.lol", "r") as infile:
+        code = [line[:-1].strip() for line in infile.readlines()
+                if line[:-1].strip() != ""]
+    result = lexer.Lexer(code).analyze()
+    symbol_table = result[1]
+
+    lex = []
+    for k in symbol_table:
+        for i in symbol_table[k]:
+            lex.append(i[1])
+        if symbol_table[k] != []:
+            if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
+                    symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
+                lex.append("-")
+    node = parse(lex)
+    
+    print("\n== TREE ==")
+    node.print_tree()

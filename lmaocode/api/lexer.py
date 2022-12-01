@@ -1,7 +1,7 @@
-from api.utility import constants as const
-from api.utility import token_regex as tokex
-# from utility import constants as const
-# from utility import token_regex as tokex
+# from api.utility import constants as const
+# from api.utility import token_regex as tokex
+from utility import constants as const
+from utility import token_regex as tokex
 import re
 
 """

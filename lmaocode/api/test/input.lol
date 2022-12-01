@@ -5,6 +5,7 @@ TLDR
 HAI
   I HAS A var ITZ 2 BTW I'm allowed!
   var IS NOW A NUMBAR
+KTHXBYE
 
   OBTW
   HA HA HA
