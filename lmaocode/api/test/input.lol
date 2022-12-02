@@ -2,7 +2,7 @@ OBTW
 HA HA HA
 TLDR
 HAI
-  I HAS A thing ITZ 2
+  I HAS A thing
   I HAS A thing1 ITZ 3  
 KTHXBYE
 

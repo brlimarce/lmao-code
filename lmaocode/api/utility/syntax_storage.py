@@ -24,7 +24,6 @@ def comments(lex):
     for element in lex:
         # if TLDR is encountered first without OBTW key word: error
         if element[1] == "End of Multiline Comment" and flag_comment == False:
-            print("flag_comment is False")
             return (False, "Error in comments")
         # checks the index of the OBTW keyword
         if element[1] == 'Start of Multiline Comment':
@@ -42,7 +41,6 @@ def comments(lex):
         cnt = cnt+1
     # if error: return error statement
     if flag_comment == True:
-        print("flag_comment is True")
         return (False, "Error in comments")
     # no error: return the updated lex w/out the comment tokens
     else:
@@ -229,7 +227,6 @@ def get_syntax_tree(lex, root):
   # Add the children.
   for child in lex[1:]:
     node.add_child(Node(node, root, child[0], child[1]))
-  node.print_tree()
 
   # TODO: Add support for structured constructs.
   # e.g. conditional statements, loops

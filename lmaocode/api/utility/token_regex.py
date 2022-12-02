@@ -12,6 +12,8 @@ import re
 | B. Name of the grammar it belongs to; and
 | C. Descriptor in the symbol table
 """
+
+# TODO: Delete the grammar name (second element).
 token_regex = [
   (re.compile(r"^HAI\b"), "hai", "Program Start"),
   (re.compile(r"^KTHXBYE\b"), "kthxbye", "Program End"),
@@ -57,7 +59,6 @@ token_regex = [
   (re.compile(r"\bNO WAI\b"), "else case", "Keyword for the ELSE Case"),
   (re.compile(r"^IM IN YR\b"), "loop start", "Start of Loop"),
   (re.compile(r"^IM OUTTA YR\b"), "loop end", "End of Loop"),
-  # (re.compile(r"\"[\w!@#$%^&*()_+=-\[\]\\/.,;'{}| ]*\""), "YARN", "YARN Literal"), # TODO: Fix this REGEX.
   (re.compile(r"\bAN\b"), "an", "Delimiter for Nested Expressions"),
   (re.compile(r"\"[^\"]*\""), "YARN", const.YARN_LITERAL),
   (re.compile(r"\b-?\d*\.\d+\b"), "NUMBAR", "NUMBAR Literal"),

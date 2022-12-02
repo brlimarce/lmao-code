@@ -7,6 +7,7 @@
 | represented via node (class).
 """
 from collections import deque
+from copy import deepcopy
 
 class Node:
   """
@@ -67,6 +68,34 @@ class Node:
   """
   def add_child(self, child):
     self._children.append(child)
+  
+  """
+  * remove_child()
+  | Remove a child based on a certain index.
+
+  * Parameter
+  | index (int): Index of the child
+
+  * Returns
+  | list: A copy of the children with the removed element
+  """
+  def remove_child(self, index: int) -> list:
+    return deepcopy(self._children.pop(index))
+  
+  """
+  * slice_children()
+  | Removes elements from the statement.
+
+  * Parameters
+  | start (int): The starting index
+  | end (int): The ending index
+
+  * Returns
+  | list: A copy of the new list of children
+  """
+  def slice_children(self, start: int, end: int) -> list:
+    new_children = deepcopy(self._children)
+    return new_children[start:end]
   
   """
   * print_tree()
