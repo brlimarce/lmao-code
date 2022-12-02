@@ -1,13 +1,12 @@
 OBTW
 HA HA HA
 TLDR
-
 HAI
-  I HAS A var ITZ 2 BTW I'm allowed!
-  var IS NOW A NUMBAR
+  I HAS A thing ITZ 2
+  I HAS A thing1 ITZ 3  
 KTHXBYE
 
-  OBTW
+OBTW
   HA HA HA
 
   BTW am also allowed!

@@ -86,6 +86,7 @@ class Node:
     stack.append(self)
 
     # Print the root node.
+    print("\n== TREE ==")
     self._print_node(self.lexeme)
     print()
 
