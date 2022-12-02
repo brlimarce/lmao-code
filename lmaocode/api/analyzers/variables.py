@@ -1,7 +1,6 @@
 """
 * Variable Declaration
-| Deals with variable declaration
-| and initialization.
+| Deals with both declaration and initialization.
 
 * Tree Structure
       I HAS A
@@ -15,10 +14,19 @@ sys.path.append("../")
 from utility import constants as const
 from utility.node import Node
 
+"""
+* analyze()
+| The main method to analyze variable
+| declaration and initialization.
+
+* Parameters
+| node (Node): The parent node
+| lookup_table (dict): The lookup table
+"""
 def analyze(node: Node, lookup_table: dict) -> dict:
   # Check if the variable already exists.
   varname = node.children[0].lexeme
-  if varname in lookup_table.keys():
+  if is_exist(varname, lookup_table):
     raise Exception(f"{varname} was already declared before.")
   
   # Initialize the variable (NOOB by default).
@@ -31,15 +39,15 @@ def analyze(node: Node, lookup_table: dict) -> dict:
     children = children[1:]
 
     # * Literal
-    if "Literal" in children[0].type:
+    if is_literal(children[0].type):
       # TODO: Apply typecasting on literal.
       lookup_table[varname] = children[0].lexeme
     # * ANOTHER Variable
-    elif children[0].type == "Identifier":
+    elif is_variable(children[0].type):
       temp_varname = children[0].lexeme
 
       # The variable does not exist.
-      if temp_varname not in lookup_table.keys():
+      if not is_exist(temp_varname, lookup_table):
         raise Exception(f"{temp_varname} does not exist.")
       
       # The variable is the same as the one being declared.
@@ -48,9 +56,52 @@ def analyze(node: Node, lookup_table: dict) -> dict:
       
       # Reassign the variable.
       lookup_table[varname] = lookup_table[temp_varname]
+    # * Value of IT
+    elif children[0].lexeme == const.IT:
+      lookup_table[varname] = lookup_table[const.IT]
     # * Expressions
     else:
       # TODO: Support expressions.
       raise Exception("Expressions are not yet supported.")
   return lookup_table
-  
+
+"""
+* is_exist()
+| Checks if the variable exists in
+| the lookup table.
+
+* Parameters
+| name (str): The variable name
+| lookup_table (dict): The lookup table
+
+* Returns
+| bool: Flag that indicates if a variable exists
+"""
+def is_exist(name: str, lookup_table: dict) -> bool:
+  return name in lookup_table.keys()
+
+"""
+* is_literal()
+| Checks if the lexeme is a literal.
+
+* Parameters
+| type (str): The lexeme type
+
+* Returns
+| bool: Flag that indicates if type is a literal
+"""
+def is_literal(type: str) -> bool:
+  return "Literal" in type
+
+"""
+* is_variable()
+| Checks if the lexeme is a variable.
+
+* Parameters
+| type (str): The lexeme type
+
+* Returns
+| bool: Flag that indicates if type is a variable
+"""
+def is_variable(type: str) -> bool:
+  return type == "Identifier"

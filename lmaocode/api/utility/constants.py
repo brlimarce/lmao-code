@@ -34,3 +34,4 @@ PRINT= "Input"
 
 # * Semantics Analyzer
 NOOB = "NOOB"
+IT = "IT"
