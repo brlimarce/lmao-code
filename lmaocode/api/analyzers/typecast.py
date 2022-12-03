@@ -23,7 +23,8 @@ import math
 
 """
 * analyze()
-|
+| The main method for typecasting. Calls the
+| right typecast for a certain value.
 """
 def analyze(node: Node, lookup_table: dict, var = const.IT) -> dict:
   # Cast depending on the type.
