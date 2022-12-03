@@ -34,4 +34,13 @@ PRINT= "Input"
 
 # * Semantics Analyzer
 NOOB = "NOOB"
+TROOF = "TROOF"
+NUMBAR = "NUMBAR"
+NUMBR = "NUMBR"
+YARN = "YARN"
 IT = "IT"
+WIN = "WIN"
+FAIL = "FAIL"
+
+VALUE_KEY = 'value'
+TYPE_KEY = 'type'
