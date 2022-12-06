@@ -30,24 +30,31 @@ def analyze(node: Node, lookup_table: dict, var = const.IT) -> dict:
   # Cast depending on the type.
   cast_type = node.children[len(node.children) - 1].lexeme
   value = lookup_table[node.children[0].lexeme] if node.type == "Explicit Typecasting" else lookup_table[node.lexeme]
+  result = ()
 
   # * YARN
   value = value[const.VALUE_KEY]
-  print(cast_type)
   if cast_type == const.YARN:
-    YARN(value, var, lookup_table)
+    result = YARN(value)
   # * NOOB
   elif cast_type == const.NOOB:
-    NOOB(value, var, lookup_table)
+    result = NOOB(value)
   # * TROOF
   elif cast_type == const.TROOF:
-    TROOF(value, var, lookup_table)
+    result = TROOF(value)
   # * NUMBAR
   elif cast_type == const.NUMBAR:
-    NUMBAR(value, var, lookup_table)
+    result = NUMBAR(value)
   # * NUMBR
   elif cast_type == const.NUMBR:
-    NUMBR(value, var, lookup_table)
+    result = NUMBR(value)
+
+  # Update the values.
+  lookup_table[var] = {
+    const.VALUE_KEY: result[0],
+    const.TYPE_KEY: result[1]
+  }
+
   return lookup_table
 
 """
@@ -57,35 +64,36 @@ def analyze(node: Node, lookup_table: dict, var = const.IT) -> dict:
 
 * Parameters
 | value (dynamic): The value to be typecasted
-| varname (str): Name of the variable
-| lookup_table (dict): The lookup table
 
 * Returns
-| dict: The updated lookup table
+| tuple: Contains the parsed value and new type
 """
-# any -> NOOB
-def NOOB(value, varname: str, lookup_table: dict) -> dict:
+# any -> NOOB (EXPLICIT)
+def NOOB(value) -> tuple:
   # NUMBR and NUMBAR Literals
   if is_numbr(value)[0] or is_numbar(value)[0]:
-    lookup_table[varname] = {
-      const.VALUE_KEY: 0 if is_numbr(value)[1] == 0 else 0.0,
-      const.TYPE_KEY: const.NUMBR if is_numbr(value)[0] else const.NUMBAR
-    }
+    return (
+      0 if is_numbr(value)[1] == 0 else 0.0,
+      const.NUMBR if is_numbr(value)[0] else const.NUMBAR
+    )
   # TROOF Literal
   elif is_troof(value):
-    lookup_table[varname] = {
-      const.VALUE_KEY: const.FAIL,
-      const.TYPE_KEY: const.TROOF
-    }
+    return (const.FAIL, const.TROOF)
   # YARN Literal
   else:
-    lookup_table[varname] = {
-      const.VALUE_KEY: const.EMPTY_STRING,
-      const.TYPE_KEY: const.YARN
-    }
+    return (const.EMPTY_STRING, const.YARN)
+
+# any -> NOOB (IMPLICIT)
+def IMPLICIT_NOOB(value) -> tuple:
+  # TROOF Literal
+  if is_troof(value):
+    return (const.FAIL, const.TROOF)
+  # Other Literals
+  else:
+    raise Exception(f"{const.NOOB} cannot be implicitly casted into this data type.")
 
 # any -> NUMBR
-def NUMBR(value, varname: str, lookup_table: dict) -> dict:
+def NUMBR(value) -> tuple:
   try:
     # TROOF Literal
     new_value = 0
@@ -98,18 +106,12 @@ def NUMBR(value, varname: str, lookup_table: dict) -> dict:
     # Normal Values
     else:
       new_value = int(value)
-    
-    lookup_table[varname] = {
-      const.VALUE_KEY: new_value,
-      const.TYPE_KEY: const.NUMBR
-    }
-
-    return lookup_table
+    return (new_value, const.NUMBR)
   except:
     raise Exception(f"The value cannot be casted into a {const.NUMBR}.")
 
 # any -> NUMBAR
-def NUMBAR(value, varname: str, lookup_table: dict) -> dict:
+def NUMBAR(value) -> tuple:
   try:
     # Parse WIN or FAIL
     new_value = 0.0
@@ -118,18 +120,12 @@ def NUMBAR(value, varname: str, lookup_table: dict) -> dict:
     # Normal Values
     else:
       new_value = float(value)
-    
-    lookup_table[varname] = {
-      const.VALUE_KEY: new_value,
-      const.TYPE_KEY: const.NUMBAR
-    }
-
-    return lookup_table
+    return (new_value, const.NUMBAR)
   except:
     raise Exception(f"The value cannot be casted into a {const.NUMBAR}.")
 
 # any -> YARN
-def YARN(value, varname: str, lookup_table: dict) -> dict:
+def YARN(value) -> tuple:
   # NUMBAR Literal
   new_value = ""
   if is_numbar(value)[0]:
@@ -141,14 +137,10 @@ def YARN(value, varname: str, lookup_table: dict) -> dict:
   # Other Literals (NUMBR, TROOF, & YARN)
   else:
     new_value = str(value)
-  lookup_table[varname] = {
-    const.VALUE_KEY: new_value,
-    const.TYPE_KEY: const.YARN
-  }
-  return lookup_table
+  return (new_value, const.YARN)
 
 # any -> TROOF
-def TROOF(value, varname: str, lookup_table: dict) -> dict:
+def TROOF(value) -> dict:
   # NUMBR and NUMBAR Literals
   new_value = const.FAIL
   if is_numbr(value)[0] or is_numbar(value)[0]:
@@ -159,12 +151,7 @@ def TROOF(value, varname: str, lookup_table: dict) -> dict:
   # YARN Literals
   else:
     new_value = const.FAIL if value == const.EMPTY_STRING else const.WIN
-  
-  lookup_table[varname] = {
-    const.VALUE_KEY: new_value,
-    const.TYPE_KEY: const.TROOF
-  }
-  return lookup_table
+  return (new_value, const.TROOF)
 
 """
 * Type Validators

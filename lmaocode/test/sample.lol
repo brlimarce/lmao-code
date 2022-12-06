@@ -1,3 +1,0 @@
-HAI
-  VISIBLE v
-KTHXBYE
