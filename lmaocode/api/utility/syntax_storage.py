@@ -84,8 +84,23 @@ def statement(lex, root):
 | grammar of codeblock
 """
 def codeblock(lex, root):
-    _expression = expression(lex, root)
-    return _expression
+    if lex[0][1] == const.PRINT:
+        _print= print_statement(lex, root)
+        if _print[0] == True:
+                lex= _print[1]
+                return(True, lex)
+        else:
+                return (False, "Error in printing", None)
+    if lex[0][1] == const.INPUT:
+        _userinput= userinput(lex, root)
+        if _userinput[0] == True:
+                lex= _userinput[1]
+                return(True, lex)
+        else:
+                return(False, "Error in user input", None)
+    else:
+        _expression = expression(lex, root)
+        return _expression
 
 """
 * expression()
@@ -98,6 +113,7 @@ def expression(lex, root):
     if lex == []:
       return (True, lex)
     
+
     # * Variable Declaration
     if lex[0][1] == const.VAR_DECLARATION:
         _vardeclaration = vardeclaration(lex, root)
@@ -108,26 +124,87 @@ def expression(lex, root):
             return (False, "Error in variable declaration", None)
 
     # * Typecasting
-    if lex[0] == const.TYPECAST[0] or lex[2] == const.TYPECAST[0] or lex[1] == const.TYPECAST[1]:
-        _assignment = assignment(lex, root)
-        if _assignment[0] == True:
-            lex = _assignment[1]
+    if lex[0][1] == const.TYPECAST[0] or lex[2][1] == const.TYPECAST[0] or lex[1][1] == const.TYPECAST[1]:
+        _typecast = typecast(lex, root)
+        if _typecast[0] == True:
+            lex = _typecast[1]
             return (True, lex)
         else:
             return (False, "Error in typecasting", None)
+    
+    if lex[1][1] == const.ASSIGNMENT: 
+        _assignment= assignment(lex, root)
+        if _assignment[0]== True:
+                lex= _assignment[1]
+                return(True, lex)
+        else:
+                return(False, "Error in assignment", None)
+    
+    if lex[0][1] == f"{const.ARITHMETIC_OP} (Addition)" or lex[0][1] == f"{const.ARITHMETIC_OP} (Subtraction)" \
+        or lex[0][1] == f"{const.ARITHMETIC_OP} (Multiplication)" or lex[0][1] == f"{const.ARITHMETIC_OP} (Division)" \
+        or lex[0][1] == f"{const.ARITHMETIC_OP} (Modulo)" or lex[0][1]== f"{const.ARITHMETIC_OP} (Max)" \
+        or lex[0][1] == f"{const.ARITHMETIC_OP} (Min)" :
+        _arithmetic= arithmetic(lex, root)
+        if _arithmetic[0] == True:
+                lex= _arithmetic[1]
+                return(True, lex)
+        else:
+                return(False, "Error in arithmetic", None)
+
     else:
         return (False, "Syntax Error", None)
+    
+
+"""
+* print() 
+* calls printable() , printrec(), varident(), literal()
+| grammar for printing
+"""
+def print_statement(lex, root):
+        _print= [["Output", varident()],
+                ["Output", literal()],
+                ["Output", "expression"],
+                ["Output", varident(), "printrec"]]
+        
+        return abstraction(_print, lex, root)
+
+def printrec():
+        return [[varident(), printrec()], varident()]
+
+"""
+* userinput()
+* calls varident()
+| grammar for getting input from user
+"""
+def userinput(lex, root):
+        _userinput= [["Input", varident()]]
+
+        return abstraction(_userinput, lex, root)
 
 """
 * assignment()
 | grammar of assignment
 """
-def assignment(lex, root):
-    _assignment = [["Explicit Typecasting", varident(), datatype()],
-                   ["Explicit Typecasting", varident(
-                   ), "Delimiter for Typecasting", datatype()],
+def typecast(lex, root):
+    _typecast = [["Explicit Typecasting", varident(), datatype()],
+                   ["Explicit Typecasting", varident(), "Delimiter for Typecasting", datatype()],
                    [varident(), "Delimiter for Typecasting", datatype()],
                    [varident(), "Variable Assignment", "Explicit Typecasting", varident(), datatype()]]
+
+    return abstraction(_typecast, lex, root)
+
+def datatype():
+    return "TYPE Literal"
+
+"""
+* assignment()
+* calls varident(), literal()
+| grammar for assignment
+"""
+def assignment(lex, root):
+    _assignment= [[varident(), "Variable Assignment", literal()],
+            [varident(), "Variable Assignment", varident()],
+            [varident(), "Variable Assignment", "expression"]]
 
     return abstraction(_assignment, lex, root)
 
@@ -138,19 +215,30 @@ def assignment(lex, root):
 def vardeclaration(lex, root):
     _vardeclaration = [
         ["Variable Declaration", varident(), "Variable Initialization", "expression"],
-        ["Variable Declaration", varident(), "Variable Initialization",
-         varident()],
+        ["Variable Declaration", varident(), "Variable Initialization",varident()],
         ["Variable Declaration", varident(), "Variable Initialization", literal()],
         ["Variable Declaration", varident()]]
 
     return abstraction(_vardeclaration, lex, root)
 
 """
-* datatype()
-| grammar of data type
+* arithmetic()
+* calls arithmvalue(), varident(), comparison(), relational(), arithmetic()
+| grammar for arithmetic operation
 """
-def datatype():
-    return "TYPE Literal"
+def arithmetic(lex, root):
+        _arithmetic=[[f"{const.ARITHMETIC_OP} (Addition)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()],
+                [f"{const.ARITHMETIC_OP} (Subtraction)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()],
+                [f"{const.ARITHMETIC_OP} (Multiplication)", arithmvalue(), "Delimiter for Nested Expressions",arithmvalue()],
+                [f"{const.ARITHMETIC_OP} (Division)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()],
+                [f"{const.ARITHMETIC_OP} (Modulo)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()],
+                [f"{const.ARITHMETIC_OP} (Max)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()],
+                [f"{const.ARITHMETIC_OP} (Min)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()]] 
+        
+        return abstraction(_arithmetic, lex, root)
+
+def arithmvalue():
+        return ["NUMBR Literal","NUMBAR Literal","TROOF Literal", varident(),"comparison","relational","arithmetic"]
 
 """
 * vardeclaration()
