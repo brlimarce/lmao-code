@@ -17,29 +17,35 @@ def parse(lex):
     #error in comments
     if handle_comments[0] == False:
         # print error
-        print(handle_comments[1])
+        print( f"🚀 ~ Error on Line {handle_comments[2]}: {handle_comments[1]}.")
 
     # no error in comments: parse the program
     else:
         lex = handle_comments[1]
+        if lex==[]: 
+            print("Parsed Successfully")
+            return None
         program = grammar.program_start(lex)
 
         # error in program start
         if program[0] == False:
             # print the error
-            print(program[1])
+            print( f"🚀 ~ Error: {program[1]}.")
         # no error in program start: iterate through the statements
         else:
             # Add the root node.
             root_node = Node(None, None, "HAI", "Program Start")
 
             lex = program[1]
+            if lex==[]: 
+                print("Parsed Successfully")
+                return None
             statement = grammar.statement(lex, root_node)
 
             # error in the statement
             if (statement[0]) == False:
                 # print the error
-                print(statement[1])
+                print( f"🚀 ~ Error on Line {statement[2]}: {statement[1]}.")
             # no error: check if the lex is empty which means that the whole program is parsed
             else:
                 # check the length of the lex list
@@ -55,7 +61,7 @@ def parse(lex):
 
                     # error: print error; break the loop
                     if (mult_statement[0] == False):
-                        print(mult_statement[1])
+                        print( f"🚀 ~ Error on Line {mult_statement[2]}: {mult_statement[1]}.")
                         break
                     else:
                         # no error: check for the len of lex; update the lex
@@ -85,12 +91,13 @@ if __name__ == "__main__":
     lex = []
     for k in symbol_table:
         for i in symbol_table[k]:
+            i=i+(k,)
             lex.append(i)
         if symbol_table[k] != []:
             if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
                     symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
                 lex.append(("Parser Delimiter", "-"))
- 
+    
     node = parse(lex)
-    node.print_tree()
+    # node.print_tree()
         
