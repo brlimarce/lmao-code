@@ -76,79 +76,123 @@ class Semantics:
     return (True, self._lookup_table)
 
 if __name__ == '__main__':
-  # Create a TEST CASE.
+  # Case 1: Variable Declaration
+  print("== Case #1: Variable Declaration ==")
   root = Node(None, None, "HAI", "Program Start")
-
-  # Variable Declaration
   child1 = Node(root, root, "I_HAS_A", "Variable Declaration")
   child2 = Node(child1, root, "thing", "Identifier")
   child3 = Node(child1, root, "ITZ", "Variable Initialization")
   child4 = Node(child1, root, "2.2", "NUMBAR Literal")
 
-  child5 = Node(child1, root, "GIMMEH", "Input")
-  child6 = Node(child1, root, "IT", "Identifier")
-
-  child7 = Node(child1, root, "VISIBLE", "Output")
-  child8 = Node(child1, root, "thing", "Identifier")
-  child9 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
-  child10 = Node(child1, root, "2", "NUMBR Literal")
-  child11 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
-  child12 = Node(child1, root, "2.2", "NUMBAR Literal")
-  child13 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
-  child14 = Node(child1, root, "Hello          友達World", "YARN Literal")
-
-  child15 = Node(child1, root, "thing", "Identifier")
-  child16 = Node(child1, root, "R", "Variable Assignment")
-  child17 = Node(child1, root, "IT", "Identifier")
-
-  child18 = Node(child1, root, "MAEK", "Explicit Typecasting")
-  child19 = Node(child1, root, "thing", "Identifier")
-  child20 = Node(child1, root, "A", "Delimiter for Typecasting")
-  child21 = Node(child1, root, "NUMBAR", "TYPE Literal")
-
-  child22 = Node(child1, root, "MAEK", "Explicit Typecasting")
-  child23 = Node(child1, root, "thing", "Identifier")
-  child24 = Node(child1, root, "A", "Delimiter for Typecasting")
-  child25 = Node(child1, root, "NUMBR", "TYPE Literal")
-
   root.add_child(child1)
-  root.add_child(child5)
-  root.add_child(child7)
-  root.add_child(child15)
-  root.add_child(child18)
-  root.add_child(child22)
-
   child1.add_child(child2)
   child1.add_child(child3)
   child1.add_child(child4)
 
+  root.print_tree()
+  analyzer = Semantics(root)
+  result = analyzer.analyze()
+  print("🚀 ~ Lookup Table:", result[1])
+
+  # Case 2: Variable Assignment
+  print("\n== Case #2: Variable Assignment ==")
+  child13 = Node(root, root, "thing", "Identifier")
+  child14 = Node(child13, root, "R", "Variable Assignment")
+  child15 = Node(child13, root, "IT", "Identifier")
+
+  root.add_child(child13)
+  child13.add_child(child14)
+  child13.add_child(child15)
+
+  root.print_tree()
+  analyzer = Semantics(root)
+  result = analyzer.analyze()
+  print("🚀 ~ Lookup Table:", result[1])
+
+  # # Case 3.1: Typecasting
+  # print("\n== Case #3.1: Typecasting ==")
+  # child16 = Node(root, root, "MAEK", "Explicit Typecasting")
+  # child17 = Node(child16, root, "thing", "Identifier")
+  # child18 = Node(child16, root, "A", "Delimiter for Typecasting")
+  # child19 = Node(child16, root, "NUMBAR", "TYPE Literal")
+
+  # root.add_child(child16)
+  # child16.add_child(child17)
+  # child16.add_child(child18)
+  # child16.add_child(child19)
+
+  # root.print_tree()
+  # analyzer = Semantics(root)
+  # result = analyzer.analyze()
+  # print("🚀 ~ Lookup Table:", result[1])
+
+  # Case 3: Typecasting
+  print("\n== Case #3: Typecasting ==")
+  child20 = Node(root, root, "I_HAS_A", "Variable Declaration")
+  child21 = Node(child20, root, "thing2", "Identifier")
+  child22 = Node(child20, root, "ITZ", "Variable Initialization")
+  child23 = Node(child20, root, "4.587586", "NUMBAR Literal")
+
+  child20.add_child(child21)
+  child20.add_child(child22)
+  child20.add_child(child23)
+
+  child24 = Node(root, root, "thing", "Identifier")
+  child25 = Node(child24, root, "R", "Variable Assignment")
+  child26 = Node(child24, root, "thing2", "Identifier")
+
+  child24.add_child(child25)
+  child24.add_child(child26)
+
+  child27 = Node(root, root, "MAEK", "Explicit Typecasting")
+  child28 = Node(child27, root, "thing", "Identifier")
+  child29 = Node(child27, root, "A", "Delimiter for Typecasting")
+  child30 = Node(child27, root, "NUMBR", "TYPE Literal")
+
+  child27.add_child(child28)
+  child27.add_child(child29)
+  child27.add_child(child30)
+
+  root.add_child(child20)
+  root.add_child(child24)
+  root.add_child(child27)
+
+  root.print_tree()
+  analyzer = Semantics(root)
+  result = analyzer.analyze()
+  print("🚀 ~ Lookup Table:", result[1])
+
+  # Case 4: Input
+  print("\n== Case #4: Input ==")
+  child5 = Node(child1, root, "GIMMEH", "Input")
+  child6 = Node(child1, root, "IT", "Identifier")
+
+  root.add_child(child5)
   child5.add_child(child6)
 
+  root.print_tree()
+  analyzer = Semantics(root)
+  result = analyzer.analyze()
+  print("🚀 ~ Lookup Table:", result[1])
+
+  # Case 5: Output
+  print("\n== Case #5: Output ==")
+  root2 = Node(None, None, "HAI", "Program Start")
+  child7 = Node(child1, root, "VISIBLE", "Output")
+  child8 = Node(child1, root, "2", "NUMBR Literal")
+  child9 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
+  child10 = Node(child1, root, "IT", "Identifier")
+  child11 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
+  child12 = Node(child1, root, "Hello          友達World", "YARN Literal")
+
+  root2.add_child(child7)
   child7.add_child(child8)
   child7.add_child(child9)
   child7.add_child(child10)
   child7.add_child(child11)
   child7.add_child(child12)
-  child7.add_child(child13)
-  child7.add_child(child14)
 
-  child15.add_child(child16)
-  child15.add_child(child17)
-
-  child18.add_child(child19)
-  child18.add_child(child20)
-  child18.add_child(child21)
-
-  child22.add_child(child23)
-  child22.add_child(child24)
-  child22.add_child(child25)
-
-  # Print the tree.
-  # * NOTE: Uncomment if not used.
-  root.print_tree()
-  print("= = =")
-
-  # Do semantic analysis.
-  analyzer = Semantics(root)
+  root2.print_tree()
+  analyzer = Semantics(root2)
   result = analyzer.analyze()
-  print("🚀 ~ file: semantics.py:55 ~ result", result)
+  print("🚀 ~ Lookup Table:", result[1])

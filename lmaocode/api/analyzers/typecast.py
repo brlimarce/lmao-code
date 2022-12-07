@@ -26,13 +26,15 @@ import math
 | The main method for typecasting. Calls the
 | right typecast for a certain value.
 """
-def analyze(node: Node, lookup_table: dict, var = const.IT) -> dict:
+def analyze(node: Node, lookup_table: dict) -> dict:
   # Cast depending on the type.
   cast_type = node.children[len(node.children) - 1].lexeme
   value = lookup_table[node.children[0].lexeme] if node.type == "Explicit Typecasting" else lookup_table[node.lexeme]
   result = ()
 
   # * YARN
+  # TODO: Support with IS NOW A
+  var = node.children[0].lexeme
   value = value[const.VALUE_KEY]
   if cast_type == const.YARN:
     result = YARN(value)
