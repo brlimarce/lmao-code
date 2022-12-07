@@ -31,6 +31,9 @@ SYNTAX_ERROR = "Syntax Error"
 VAR_DECLARATION= "Variable Declaration"
 TYPECAST= ["Explicit Typecasting", "Delimiter for Typecasting"]
 PRINT= "Input"
+ASSIGNMENT= "Variable Assignment"
+PRINT= "Output"
+INPUT= "Input"
 
 # * Semantics Analyzer
 NOOB = "NOOB"
