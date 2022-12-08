@@ -130,12 +130,12 @@ def NUMBAR(value) -> tuple:
 def YARN(value) -> tuple:
   # NUMBAR Literal
   new_value = ""
-  if is_numbar(value)[0]:
+  if is_numbar(value)[0] and not is_numbr(value)[0]:
     result = is_numbar(value)[1]
     new_value = f"{int(result * 100) / 100.0:.2f}"
   # NOOB Literal
   elif value == const.NOOB:
-    new_value = const.EMPTY_STRING
+    new_value = ""
   # Other Literals (NUMBR, TROOF, & YARN)
   else:
     new_value = str(value)

@@ -19,6 +19,7 @@ sys.path.append("../")
 
 from utility import constants as const
 from utility.node import Node
+from analyzers import typecast
 
 """
 * analyze()
@@ -52,7 +53,6 @@ def analyze(node: Node, lookup_table: dict) -> dict:
 
     # * Literal
     if is_literal(children[0].type):
-      # TODO: Apply typecasting on literal.
       lookup_table[varname] = {
         const.VALUE_KEY: children[0].lexeme,
         const.TYPE_KEY: children[0].type
@@ -111,7 +111,7 @@ def analyze_assignment(node: Node, lookup_table: dict) -> dict:
   if is_literal(value.type):
     lookup_table[varname] = {
       const.VALUE_KEY: value.lexeme,
-      const.TYPE_KEY: (value.type).replace(value.type, "").strip()
+      const.TYPE_KEY: (value.type).replace(const.LITERAL, "").strip()
     }
   elif is_variable(value.type):
     # Raise an error if variable is non-existent.

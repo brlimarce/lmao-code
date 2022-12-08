@@ -165,7 +165,6 @@ def print_statement(lex, root):
                 ["Output", literal()],
                 ["Output", "expression"],
                 ["Output", varident(), "printrec"]]
-        
         return abstraction(_print, lex, root)
 
 def printrec():
@@ -265,7 +264,7 @@ def abstraction(grammar, lex, root):
     flag_literal = False
     index = 0
     node = None
-
+    
     for k in grammar:
         if (len(lex)-1 >= len(k)):
             for i in k:

@@ -1,6 +1,8 @@
 from utility import constants as const
 from utility.node import Node
-from analyzers import variables, io, typecast
+from analyzers import variables, io, typecast, conditional
+import lexer
+from parser import parse
 
 """
 * Semantics
@@ -15,8 +17,11 @@ class Semantics:
   # * Constructor
   def __init__(self, root):
     self._root = root
+    # self._lookup_table = {const.IT: { 
+    #   const.VALUE_KEY: const.NOOB, const.TYPE_KEY: const.NOOB 
+    # }}
     self._lookup_table = {const.IT: { 
-      const.VALUE_KEY: const.NOOB, const.TYPE_KEY: const.NOOB 
+      const.VALUE_KEY: 2, const.TYPE_KEY: "NUMBR Literal"
     }}
   
   @property
@@ -52,22 +57,25 @@ class Semantics:
     for child in self._root.children:
       # Get the analyzer for each statement.
       try:
-        # Check for the analyzer to use.
-        # * Variable Declaration
-        if child.type == "Variable Declaration":
-          self._lookup_table = variables.analyze(child, self._lookup_table)
-        # * Input
-        elif child.type == "Input":
-          self._lookup_table = io.analyze_input(child, self._lookup_table)
-        # * Output
-        elif child.type == "Output":
-          self._lookup_table = io.analyze_output(child, self._lookup_table)
-        # * Variable Assignment
-        elif child.children[0].type == "Variable Assignment":
-          self._lookup_table = variables.analyze_assignment(child, self._lookup_table)
-        # * Explicit Typecasting
-        elif child.type == "Explicit Typecasting":
-          self._lookup_table = typecast.analyze(child, self._lookup_table)
+        # * IF-THEN Statement
+        if child.type == "Start of IF-THEN Statement":
+          result = conditional.analyze_ifthen(child, self._lookup_table)
+          self._lookup_table = result[1] # Store lookup table.
+
+          # Execute the code block in the matching CASE.
+          if result[0] != None:
+            for code in result[0].children:
+              self.codeblock(code)
+        # * SWITCH-CASE Statement
+        elif child.type == "Start of SWITCH Case Statement":
+          result = conditional.analyze_switch(child, self._lookup_table[const.IT][const.VALUE_KEY])
+          if result != None:
+            for code in result:
+              for statements in code:
+                self.codeblock(statements)
+        # * Expression
+        else:
+          self.codeblock(child)
       except Exception as e:
         return (False, self.raise_error(idx + 1, e))
       finally:
@@ -75,124 +83,126 @@ class Semantics:
     # Return the flag and lookup table.
     return (True, self._lookup_table)
 
+  """
+  * codeblock()
+  | Analyze the code block in
+  | the program.
+
+  | Does not include conditional statements
+  | or loops.
+
+  * Parameters
+  | child (Node): The child node
+  """
+  def codeblock(self, child: Node):
+    # * Variable Declaration
+    if child.type == "Variable Declaration":
+      self._lookup_table = variables.analyze(child, self._lookup_table)
+    # * Input
+    elif child.type == "Input":
+      self._lookup_table = io.analyze_input(child, self._lookup_table)
+    # * Output
+    elif child.type == "Output":
+      self._lookup_table = io.analyze_output(child, self._lookup_table)
+    # * Variable Assignment
+    elif child.children[0].type == "Variable Assignment":
+      self._lookup_table = variables.analyze_assignment(child, self._lookup_table)
+    # * Explicit Typecasting
+    elif child.type == "Explicit Typecasting":
+      self._lookup_table = typecast.analyze(child, self._lookup_table)
+
 if __name__ == '__main__':
-  # Case 1: Variable Declaration
-  print("== Case #1: Variable Declaration ==")
   root = Node(None, None, "HAI", "Program Start")
-  child1 = Node(root, root, "I_HAS_A", "Variable Declaration")
-  child2 = Node(child1, root, "thing", "Identifier")
-  child3 = Node(child1, root, "ITZ", "Variable Initialization")
-  child4 = Node(child1, root, "2.2", "NUMBAR Literal")
 
-  root.add_child(child1)
-  child1.add_child(child2)
-  child1.add_child(child3)
-  child1.add_child(child4)
+  # ** LOOPS **
+  
 
-  root.print_tree()
+  # # ** SWITCH STATEMENT **
+  # child1 = Node(root, root, "WTF?", "Start of SWITCH Case Statement")
+  # root.add_child(child1)
+
+  # child2 = Node(child1, child1, "OMG", "Keyword for the SWITCH Case Statement")
+  # child3 = Node(child2, child1, 4, "NUMBR Literal")
+  
+  # child1.add_child(child2)
+  # child2.add_child(child3)
+
+  # child7 = Node(child3, child1, "VISIBLE", "Output")
+  # child8 = Node(child7, child1, 2, "NUMBR Literal")
+
+  # child3.add_child(child7)
+  # child7.add_child(child8)
+
+  # child4 = Node(child1, child1, "OMG", "Keyword for the SWITCH Case Statement")
+  # child5 = Node(child4, child1, 3, "NUMBR Literal")
+
+  # child1.add_child(child4)
+  # child4.add_child(child5)
+
+  # child9 = Node(child3, child1, "VISIBLE", "Output")
+  # child10 = Node(child7, child1, "Same case but diff catch", "YARN Literal")
+
+  # child5.add_child(child9)
+  # child9.add_child(child10)
+
+  # child6 = Node(child1, child1, "OMGWTF", "Keyword for the Default Case")
+  # child1.add_child(child6)
+
+  # child10 = Node(child6, child1, "VISIBLE", "Output")
+  # child11 = Node(child10, child1, "Default Case", "YARN Literal")
+
+  # child6.add_child(child10)
+  # child10.add_child(child11)
+
+  # # ** IF-THEN STATEMENT **
+  # child1 = Node(root, root, "O_RLY?", "Start of IF-THEN Statement")
+  # root.add_child(child1)
+
+  # child2 = Node(child1, child1, "YA_RLY", "Keyword for the IF Case")
+  # child3 = Node(child1, child1, "NO_WAI", "Keyword for the ELSE Case")
+
+  # child1.add_child(child2)
+  # # child1.add_child(child3)
+
+  # # YA RLY
+  # child4 = Node(child2, child1, "VISIBLE", "Output")
+  # child5 = Node(child4, child1, "YAY, WIN", "TROOF Literal")
+
+  # child2.add_child(child4)
+  # child4.add_child(child5)
+
+  # # NO WAI
+  # child6 = Node(child3, child1, "VISIBLE", "Output")
+  # child7 = Node(child6, child1, "OH NO, FAIL", "TROOF Literal")
+
+  # child3.add_child(child6)
+  # child6.add_child(child7)
+
+  # * NOTE: Uncomment this code block
+  # * for the analyzer.
+  
+  # # * Lexical Analyzer
+  # code = []
+  # with open("test/input.lol", "r") as infile:
+  #     code = [line[:-1].strip() for line in infile.readlines()
+  #             if line[:-1].strip() != ""]
+  # result = lexer.Lexer(code).analyze()
+  # symbol_table = result[1]
+
+  # # * Syntax Analyzer
+  # lex = []
+  # for k in symbol_table:
+  #     for i in symbol_table[k]:
+  #         lex.append(i)
+  #     if symbol_table[k] != []:
+  #         if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
+  #                 symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
+  #             lex.append(("Parser Delimiter", "-"))
+
+  # node = parse(lex)
+  # # node.print_tree()
+
+  # * Semantics Analyzer
   analyzer = Semantics(root)
   result = analyzer.analyze()
-  print("🚀 ~ Lookup Table:", result[1])
-
-  # Case 2: Variable Assignment
-  print("\n== Case #2: Variable Assignment ==")
-  child13 = Node(root, root, "thing", "Identifier")
-  child14 = Node(child13, root, "R", "Variable Assignment")
-  child15 = Node(child13, root, "IT", "Identifier")
-
-  root.add_child(child13)
-  child13.add_child(child14)
-  child13.add_child(child15)
-
-  root.print_tree()
-  analyzer = Semantics(root)
-  result = analyzer.analyze()
-  print("🚀 ~ Lookup Table:", result[1])
-
-  # # Case 3.1: Typecasting
-  # print("\n== Case #3.1: Typecasting ==")
-  # child16 = Node(root, root, "MAEK", "Explicit Typecasting")
-  # child17 = Node(child16, root, "thing", "Identifier")
-  # child18 = Node(child16, root, "A", "Delimiter for Typecasting")
-  # child19 = Node(child16, root, "NUMBAR", "TYPE Literal")
-
-  # root.add_child(child16)
-  # child16.add_child(child17)
-  # child16.add_child(child18)
-  # child16.add_child(child19)
-
-  # root.print_tree()
-  # analyzer = Semantics(root)
-  # result = analyzer.analyze()
-  # print("🚀 ~ Lookup Table:", result[1])
-
-  # Case 3: Typecasting
-  print("\n== Case #3: Typecasting ==")
-  child20 = Node(root, root, "I_HAS_A", "Variable Declaration")
-  child21 = Node(child20, root, "thing2", "Identifier")
-  child22 = Node(child20, root, "ITZ", "Variable Initialization")
-  child23 = Node(child20, root, "4.587586", "NUMBAR Literal")
-
-  child20.add_child(child21)
-  child20.add_child(child22)
-  child20.add_child(child23)
-
-  child24 = Node(root, root, "thing", "Identifier")
-  child25 = Node(child24, root, "R", "Variable Assignment")
-  child26 = Node(child24, root, "thing2", "Identifier")
-
-  child24.add_child(child25)
-  child24.add_child(child26)
-
-  child27 = Node(root, root, "MAEK", "Explicit Typecasting")
-  child28 = Node(child27, root, "thing", "Identifier")
-  child29 = Node(child27, root, "A", "Delimiter for Typecasting")
-  child30 = Node(child27, root, "NUMBR", "TYPE Literal")
-
-  child27.add_child(child28)
-  child27.add_child(child29)
-  child27.add_child(child30)
-
-  root.add_child(child20)
-  root.add_child(child24)
-  root.add_child(child27)
-
-  root.print_tree()
-  analyzer = Semantics(root)
-  result = analyzer.analyze()
-  print("🚀 ~ Lookup Table:", result[1])
-
-  # Case 4: Input
-  print("\n== Case #4: Input ==")
-  child5 = Node(child1, root, "GIMMEH", "Input")
-  child6 = Node(child1, root, "IT", "Identifier")
-
-  root.add_child(child5)
-  child5.add_child(child6)
-
-  root.print_tree()
-  analyzer = Semantics(root)
-  result = analyzer.analyze()
-  print("🚀 ~ Lookup Table:", result[1])
-
-  # Case 5: Output
-  print("\n== Case #5: Output ==")
-  root2 = Node(None, None, "HAI", "Program Start")
-  child7 = Node(child1, root, "VISIBLE", "Output")
-  child8 = Node(child1, root, "2", "NUMBR Literal")
-  child9 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
-  child10 = Node(child1, root, "IT", "Identifier")
-  child11 = Node(child1, root, "AN", "Delimiter for Nested Expressions")
-  child12 = Node(child1, root, "Hello          友達World", "YARN Literal")
-
-  root2.add_child(child7)
-  child7.add_child(child8)
-  child7.add_child(child9)
-  child7.add_child(child10)
-  child7.add_child(child11)
-  child7.add_child(child12)
-
-  root2.print_tree()
-  analyzer = Semantics(root2)
-  result = analyzer.analyze()
-  print("🚀 ~ Lookup Table:", result[1])
+  print(result)

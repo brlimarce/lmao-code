@@ -7,22 +7,19 @@ HAI
   I HAS A thing1 ITZ 3
 
   BTW typecasting
-  var IS NOW A NUMBAR
+  BTW var IS NOW A NUMBAR
 
   BTW assignement
-  var1 R 5
-  var2 R var1
-
-  BTW arithmetic
-  SUM OF 3 AN 5
-  DIFF OF 4 AN 3.14 
+  thing R 5
+  thing1 R thing
 
   BTW printing
-  VISIBLE num
+  VISIBLE thing
   VISIBLE 4.6
 
   BTW user input
-  GIMMEH var 
+  GIMMEH thing1 
+  VISIBLE thing1
 KTHXBYE
 
 OBTW

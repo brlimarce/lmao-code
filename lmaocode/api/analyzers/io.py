@@ -11,6 +11,10 @@
       VISIBLE
          |
      vle AN vle
+
+* Note: The AN keyword is optional, but since
+I also use the same function for SMOOSH, it's
+still supported.
 """
 # To go outside the folder (relative path).
 import sys

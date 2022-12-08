@@ -45,5 +45,6 @@ IT = "IT"
 WIN = "WIN"
 FAIL = "FAIL"
 
-VALUE_KEY = 'value'
-TYPE_KEY = 'type'
+VALUE_KEY = "value"
+TYPE_KEY = "type"
+BREAK = "GTFO"
