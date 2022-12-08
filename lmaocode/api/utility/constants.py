@@ -34,6 +34,12 @@ PRINT= "Input"
 ASSIGNMENT= "Variable Assignment"
 PRINT= "Output"
 INPUT= "Input"
+CONCAT= "String Concatenation"
+
+ALL= "All"
+ARITHMETIC= "Arithmetic"
+COMPARISON= "Comparison"
+BOOLEAN= "Boolean"
 
 # * Semantics Analyzer
 NOOB = "NOOB"
