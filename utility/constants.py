@@ -1,0 +1,12 @@
+ASSETS_FOLDER = "assets/"
+STATIC_FOLDER = f"{ASSETS_FOLDER}static/"
+
+PRIMARY = "#fffbeb"
+BLACK = "#27272a"
+WHITE = "#fefefe"
+ORANGE = "#f97316"
+GREY = "#a3a3a3"
+
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+MARGIN = 40

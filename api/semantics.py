@@ -40,7 +40,7 @@ class Semantics:
   | str: The formatted error message
   """
   def raise_error(self, line_number: int, message: str) -> str:
-    return f"~ Error in Line {line_number}: {message}"
+    return f"🚀 ~ Error on Line {line_number}: {message}"
 
   """
   * analyze()
@@ -113,9 +113,7 @@ class Semantics:
 
 if __name__ == '__main__':
   root = Node(None, None, "HAI", "Program Start")
-
-  # ** LOOPS **
-  
+   
 
   # # ** SWITCH STATEMENT **
   # child1 = Node(root, root, "WTF?", "Start of SWITCH Case Statement")
