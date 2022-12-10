@@ -1,15 +1,9 @@
 HAI
   OBTW
-  WTF?
-    OMG 2
-      VISIBLE "hi"
-      GTFO
-    OMGWTF
-      VISIBLE "hey"
-  OIC
-  TLDR
   I HAS A thing ITZ 2
   thing IS NOW A NUMBAR
+  TLDR
+  SUM OF 3 AN SUM OF 3 AN 5
 KTHXBYE
 OBTW
 TLDR
