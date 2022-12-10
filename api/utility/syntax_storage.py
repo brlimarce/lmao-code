@@ -165,7 +165,7 @@ def codeblock(lex, root):
     
     # * Expression
     else:
-        _expression = expression(lex, root, const.ALL)
+        _expression = expression(lex, root)
         return _expression
 
 
@@ -173,38 +173,31 @@ def codeblock(lex, root):
 * expression()
 | grammar of expression
 """
-def expression(lex, root, type):
+def expression(lex, root):
     # expression [["arithmetic"], ["boolean"], ['comparison']]
 
     # Break if there are no more lexemes.
     if lex == []:
         return (True, lex)
 
-    # * Arithmetic
-    if (lex[0][1] == f"{const.ARITHMETIC_OP} (Addition)" or lex[0][1] == f"{const.ARITHMETIC_OP} (Subtraction)"
-        or lex[0][1] == f"{const.ARITHMETIC_OP} (Multiplication)" or lex[0][1] == f"{const.ARITHMETIC_OP} (Division)"
-        or lex[0][1] == f"{const.ARITHMETIC_OP} (Modulo)" or lex[0][1] == f"{const.ARITHMETIC_OP} (Max)"
-            or lex[0][1] == f"{const.ARITHMETIC_OP} (Min)") and (type == const.ALL or type == const.ARITHMETIC):
-        _arithmetic = arithmetic(lex, root)
-        if _arithmetic[0] == True:
-            lex = _arithmetic[1]
-            return (True, lex)
-        else:
-          return (False, "Invalid arithmetic operation", lex[0][2])
+    # * Arithmetic, Comparison, Boolean, Relational
+    operations= [f"{const.ARITHMETIC_OP} (Addition)", f"{const.ARITHMETIC_OP} (Subtraction)", f"{const.ARITHMETIC_OP} (Multiplication)",
+                f"{const.ARITHMETIC_OP} (Division)", f"{const.ARITHMETIC_OP} (Modulo)", f"{const.ARITHMETIC_OP} (Max)", 
+                f"{const.ARITHMETIC_OP} (Min)", f"{const.COMPARISON_OP} (Not Equal)", f"{const.COMPARISON_OP} (Equal)",
+                f"{const.BOOLEAN_OP} (AND operator)", f"{const.BOOLEAN_OP} (OR operator)", f"{const.BOOLEAN_OP} (XOR operator)",
+                f"{const.BOOLEAN_OP} (AND with Infinite Arity)", f"{const.BOOLEAN_OP} (OR with Infinite Arity)",  
+                f"{const.BOOLEAN_OP} (NOT operator)"]
 
-    # * Comparison
-    if (lex[0][1] == f"{const.COMPARISON_OP} (Not Equal)" or lex[0][1] == f"{const.COMPARISON_OP} (Equal)") \
-            and (type == const.ALL or type == const.COMPARISON):
-        _comparison = comparison(lex, root)
-        if _comparison[0] == True:
-            lex = _comparison[1]
+    if lex[0][1] in operations:
+        _operation = operation(lex, root, operations)
+        if _operation[0] == True:
+            lex = _operation[1]
             return (True, lex)
         else:
-            return (False, "Invalid comparison", lex[0][2])
+            return (False, "Invalid operation", lex[0][2])
 
     else:
-        return (False, "Syntax Error", lex[0][2])
-
+        return(False, "Syntax Error")
 
 """
 * print() 
@@ -212,15 +205,27 @@ def expression(lex, root, type):
 | grammar for printing
 """
 def print_statement(lex, root):
-    _expression = (const.ALL, "expression")
+    _expression = ("-", "expression")
+    _printrec= ("", "printrec")
     _print = [["Output", varident()],
               ["Output", literal()],
               ["Output", _expression],
-              ["Output", varident(), "printrec"]]
+              ["Output", varident(), _printrec]]
     return abstraction(_print, lex, root)
 
-def printrec():
-    return [[printrec()], [varident()], [literal()]]
+def printrec(lex, root):
+    flag = True
+    index=0
+    for e in lex:
+        if index != len(lex)-1:
+            if e[1] == varident():
+                pass
+            elif e[1] not in literal():
+                flag= False  
+        index=index+1
+
+    lex = lex[index:]
+    return (flag, lex, root)
 
 """
 * userinput()
@@ -255,7 +260,7 @@ def datatype():
 | grammar for assignment
 """
 def assignment(lex, root):
-    _expression = (const.ALL, "expression")
+    _expression = ("-", "expression")
     _assignment = [[varident(), "Variable Assignment", literal()],
                    [varident(), "Variable Assignment", varident()],
                    [varident(), "Variable Assignment", _expression]]
@@ -268,7 +273,7 @@ def assignment(lex, root):
 | grammar of variable declaration
 """
 def vardeclaration(lex, root):
-    _expression = (const.ALL, "expression")
+    _expression = ("-", "expression")
     _vardeclaration = [
         ["Variable Declaration", varident(), "Variable Initialization", varident()],
         ["Variable Declaration", varident(), "Variable Initialization", literal()],
@@ -496,74 +501,54 @@ def evaluate_block(code, root):
 * calls arithmvalue(), varident(), comparison(), relational(), arithmetic()
 | grammar for arithmetic operation
 """
-def arithmetic(lex, root):
-    _arithmetic = [[f"{const.ARITHMETIC_OP} (Addition)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()],
-                   [f"{const.ARITHMETIC_OP} (Subtraction)", arithmvalue(
-                   ), "Delimiter for Nested Expressions", arithmvalue()],
-                   [f"{const.ARITHMETIC_OP} (Multiplication)", arithmvalue(
-                   ), "Delimiter for Nested Expressions", arithmvalue()],
-                   [f"{const.ARITHMETIC_OP} (Division)", arithmvalue(
-                   ), "Delimiter for Nested Expressions", arithmvalue()],
-                   [f"{const.ARITHMETIC_OP} (Modulo)", arithmvalue(
-                   ), "Delimiter for Nested Expressions", arithmvalue()],
-                   [f"{const.ARITHMETIC_OP} (Max)", arithmvalue(
-                   ), "Delimiter for Nested Expressions", arithmvalue()],
-                   [f"{const.ARITHMETIC_OP} (Min)", arithmvalue(), "Delimiter for Nested Expressions", arithmvalue()]]
+def operation(lex, root, operations):
+    _lex= lex[:]
+    _lex.reverse()
+    stack= _lex[1:]
+    index=0
+    flag_value= True
 
-    return abstraction(_arithmetic, lex, root)
+    stack_cpy= stack[:]
+    for s in range(len(stack_cpy)):
+        if stack_cpy[s][1] in operations:
+            #first operand
+            if stack[index-1][1] == "VALID":
+                pass
+            elif stack[index-1][1] == varident():
+                pass
+            elif stack[index-1][1] not in literal():
+                flag_value = False
 
-def arithmvalue():
-    return ["NUMBR Literal", "NUMBAR Literal", "TROOF Literal", varident(), "comparison", "relational", "arithmetic"]
+            #check for the delimiter of the operation
+            if stack[index-2][1] != "Delimiter for Nested Expressions":
+                flag_value= False
 
-"""
-* comparison()
-* calls compvalue(), relational()
-| grammar for comparison
-"""
-def comparison(lex, root):
-    _relational = ("comparison", "relational")
-    _arithmetic = (const.ARITHMETIC, "expression")
-    _comparison = [[f"{const.COMPARISON_OP} (Equal)", compvalue(), "Delimiter for Nested Expressions", _relational],
-                   [f"{const.COMPARISON_OP} (Not Equal)", compvalue(
-                   ), "Delimiter for Nested Expressions", _relational],
-                   [f"{const.COMPARISON_OP} (Equal)", "arithmetic",
-                    "Delimiter for Nested Expressions", _relational],
-                   [f"{const.COMPARISON_OP} (Not Equal)", "arithmetic", "Delimiter for Nested Expressions", _relational]]
-    return abstraction(_comparison, lex, root)
+            #second operand
+            if stack[index-3][1] == "VALID":
+                pass
+            elif stack[index-3][1] == varident():
+                pass
+            elif stack[index-3][1] not in literal(): 
+                flag_value= False
+            
+            if flag_value== True:
+                stack[index] = ("-","VALID")
+                stack.pop(index-1)
+                stack.pop(index-2)
+                stack.pop(index-3)
+                index = index - 3
+            else:
+                break
+        index= index+1
 
-def compvalue():
-    return ["NUMBR Literal", "NUMBAR Literal", varident()]
+    cnt=0
+    for k in lex:
+        if k[0] == 'Parser Delimiter':
+            cnt=cnt+1
+            break
+        cnt= cnt+1
 
-"""
-* relational()
-* calls compvalue(), arithmetic()
-| grammar for comparison
-"""
-def relational(lex, root):
-    _arithmetic = (const.ARITHMETIC, "expression")
-    _relational = [[compvalue()],
-                   [f"{const.ARITHMETIC_OP} (Max)", compvalue(
-                   ), "Delimiter for Nested Expressions", compvalue()],
-                   [f"{const.ARITHMETIC_OP} (Min)", compvalue(
-                   ), "Delimiter for Nested Expressions", compvalue()],
-                   [f"{const.ARITHMETIC_OP} (Max)", "arithmetic",
-                    "Delimiter for Nested Expressions", "arithmetic"],
-                   [f"{const.ARITHMETIC_OP} (Min)", "arithmetic",
-                    "Delimiter for Nested Expressions", "arithmetic"],
-                   [f"{const.ARITHMETIC_OP} (Max)", compvalue(
-                   ), "Delimiter for Nested Expressions", _arithmetic],
-                   [f"{const.ARITHMETIC_OP} (Min)", compvalue(
-                   ), "Delimiter for Nested Expressions", _arithmetic],
-                   [f"{const.ARITHMETIC_OP} (Max)", "arithmetic",
-                    "Delimiter for Nested Expressions", compvalue()],
-                   [f"{const.ARITHMETIC_OP} (Min)", "arithmetic", "Delimiter for Nested Expressions", compvalue()], ]
-
-    _abstraction = abstraction(_relational, lex, root)
-    if _abstraction[0] == True:
-        lex = _abstraction[1]
-        return (True, lex)
-    else:
-        return (False, lex)
+    return(flag_value, lex[cnt:], root, stack_cpy)
 
 """
 * vardeclaration()
@@ -602,23 +587,28 @@ def abstraction(grammar, lex, root):
                         flag = False
                 elif type(i) == tuple:
                     if flag == True:
-                        expr_len = len(lex[index:])
                         if i[1] == "expression":
-                            exp_type = i[0]
-                            _expression = expression(
-                                lex[index:], root, exp_type)
+                            # len of remaining grammar to parser
+                            rem_len= len(k) - (index+1)
+                            if rem_len!=0:
+                                _lex= lex[index:-(rem_len+1)]
+                                _lex.append(('Parser Delimiter', '-'))
+                            else:
+                                _lex= lex[index:]
+                            expr_len = len(_lex) - 1
+                           
+                            _expression = expression(_lex, root)
                             if _expression[0] == False:
                                 flag = False
                             else:
-                                lex_len = len(_expression[1])
-                                upd_ind = expr_len-lex_len-2
-                                index = index + upd_ind
-                        if i[1] == "relational":
-                            _relational = relational(lex[index:], root)
-                            if _relational[0] == False:
+                                index = (index + expr_len)-1
+            
+                        if i[1] == "printrec":
+                            _printrec = printrec(lex[index:], root)
+                            if _printrec[0] == False:
                                 flag = False
                             else:
-                                lex_len = len(_relational[1])
+                                lex_len = len(_printrec[1])
                                 upd_ind = expr_len-lex_len-2
                                 index = index + upd_ind
                 else:
@@ -637,6 +627,8 @@ def abstraction(grammar, lex, root):
             flag = True
             index = 0
     return (result, lex, root)
+    
+
 
 """
 * get_syntax_tree()

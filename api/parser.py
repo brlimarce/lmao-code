@@ -82,7 +82,7 @@ def parse(lex):
 if __name__ == "__main__":
     # * Lexical Analyzer
     code = []
-    with open("api/test/input.lol", "r") as infile:
+    with open("test/sample.lol", "r") as infile:
         code = [line[:-1].strip() for line in infile.readlines()
                 if line[:-1].strip() != ""]
     result = lexer.Lexer(code).analyze()
@@ -105,10 +105,10 @@ if __name__ == "__main__":
                   lex.append(("Parser Delimiter", "-"))
       
       node = parse(lex)
-      if node != None:
-        node.print_tree()
+    #   if node != None:
+    #     node.print_tree()
 
       # * Semantics
-      analyzer = semantics.Semantics(node)
-      result = analyzer.analyze()
-      print(f"Result: {result}")
+    #   analyzer = semantics.Semantics(node)
+    #   result = analyzer.analyze()
+    #   print(f"Result: {result}")
