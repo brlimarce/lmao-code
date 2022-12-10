@@ -1,17 +1,12 @@
 <!-- Heading -->
-
-# **lmao-code**
-
-🤖 Interpreter for LOLCODE using **Python.**
+<img src="assets/banner.png">
 <br /> <br />
 
 <!-- Installation -->
-
-## **Dependencies**
-
 ### **A. Virtual Environment**
 
 ---
+This repository relies on using a **virtual environment (venv)** so that the downloaded packages don't reflect on the machine. <br /> <br />
 
 **Activate** the virtual environment (venv) before **running the Python file.** Otherwise, the installed dependencies won't work.
 
@@ -26,9 +21,10 @@ virtualenv venv
 source venv/bin/activate # Linux
 venv/Scripts/activate # Windows
 
-# 4. Deactivate your VENV (to turn it off).
+# 4. Turn off your VENV.
 deactivate
 ```
+<br />
 
 ### **B. Install Dependencies**
 
