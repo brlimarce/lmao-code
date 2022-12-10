@@ -1,6 +1,7 @@
 HAI
   BTW valid
-  SMOOSH
+  VISIBLE "hi" "hey"
+  VISIBLE "hey"
 KTHXBYE
 OBTW
 TLDR

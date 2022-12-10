@@ -214,21 +214,49 @@ def expression(lex, root, type):
         return (False, "Syntax error", lex[0][2])
 
 
+# """
+# * print() 
+# * calls printable() , printrec(), varident(), literal()
+# | grammar for printing
+# """
+# def print_statement(lex, root):
+#     _expression = (const.ALL, "expression")
+#     _print = [["Output", varident()],
+#               ["Output", literal()],
+#               ["Output", _expression],
+#               ["Output", varident(), "printrec"]]
+#     return abstraction(_print, lex, root)
+
+# def printrec():
+#     return [[printrec()], [varident()], [literal()]]
+
 """
-* print() 
-* calls printable() , printrec(), varident(), literal()
+* print_statement()
 | grammar for printing
+
+| ! Note: Does not support AN keyword.
 """
 def print_statement(lex, root):
-    _expression = (const.ALL, "expression")
-    _print = [["Output", varident()],
-              ["Output", literal()],
-              ["Output", _expression],
-              ["Output", varident(), "printrec"]]
-    return abstraction(_print, lex, root)
+  # * Declaration
+  print_node = Node(root, root, lex[0][0], lex[0][1])
+  lex_copy = deepcopy(lex[1:])
 
-def printrec():
-    return [[printrec()], [varident()], [literal()]]
+  # Check if the output is a literal,
+  # variable, or expression.
+  while not is_end(lex_copy) and lex_copy[0][1] != const.DASH:
+    # Literal
+    if variables.is_literal(lex_copy[0][1]):
+      print_node.add_child(Node(print_node, root, lex_copy[0][0], lex_copy[0][1]))
+    # Variable
+    elif variables.is_variable(lex_copy[0][1]):
+      print_node.add_child(Node(print_node, root, lex_copy[0][0], lex_copy[0][1]))
+    # Expression
+    else:
+      return (False, "Expressions are not yet supported.", root)
+    lex_copy = lex_copy[1:]
+  root.add_child(print_node)
+  lex = lex_copy[1:]
+  return (True, lex, root)
 
 """
 * userinput()
@@ -450,7 +478,6 @@ def loop(lex, root):
   # * Declaration
   lroot = Node(root, root, lex[0][0], lex[0][1])
   lex_copy = deepcopy(lex)[1:]
-  lex = []
   loop_children = []
   
   # Check if an identifier was used as a loop delimiter.
@@ -546,7 +573,8 @@ def loop(lex, root):
   # Add the children to the loop root.
   for child in loop_children:
     lroot.add_child(child)
-  lroot.print_tree()
+  root.add_child(lroot)
+  lex = lex_copy[1:]
   return (True, lex, root)
 
 """

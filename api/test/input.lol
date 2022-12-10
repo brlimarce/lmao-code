@@ -1,6 +1,6 @@
+BTW start of the program
 HAI
-  BTW valid
-  SUM OF SUM OF 5 AN 2 AN SUM OF 1 AN 3
+  IM IN YR loopy UPPIN YR var TIL BOTH SAEM 3 AN 4
+    VISIBLE "hi" 2 3
+  IM OUTTA YR loopy
 KTHXBYE
-OBTW
-TLDR

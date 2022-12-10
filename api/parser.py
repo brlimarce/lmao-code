@@ -83,7 +83,7 @@ if __name__ == "__main__":
   try:
     # * Lexical Analyzer
     code = []
-    with open("test/input.lol", "r") as infile:
+    with open("test/sample.lol", "r") as infile:
         code = [line[:-1].strip() for line in infile.readlines()
                 if line[:-1].strip() != ""]
     result = lexer.Lexer(code).analyze()
@@ -111,9 +111,9 @@ if __name__ == "__main__":
       if node != None:
         node.print_tree()
 
-      # # * Semantics
-      # analyzer = semantics.Semantics(node)
-      # result = analyzer.analyze()
-      # print(f"Result: {result}")
+      # * Semantics
+      analyzer = semantics.Semantics(node)
+      result = analyzer.analyze()
+      print(f"Result: {result}")
   except Exception as e:
     print(str(e))
