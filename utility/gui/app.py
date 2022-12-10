@@ -1,5 +1,4 @@
 from api.lexer import Lexer
-from api import parser
 
 from utility.gui.font import Font
 from utility.gui import helper
@@ -121,7 +120,7 @@ class App(QMainWindow):
   # Render the button group.
   def button_group(self) -> QHBoxLayout:
     row_root = QHBoxLayout()
-    row_root.setContentsMargins(0, const.MARGIN - 20, 0, const.MARGIN - 8)
+    row_root.setContentsMargins(0, const.MARGIN - 28, 0, const.MARGIN)
     row_root.setSpacing(16)
 
     # Execute Button

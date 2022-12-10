@@ -24,7 +24,7 @@ def table(colnames: list) -> QTableWidget:
 
   # Set the table headers.
   table.setColumnCount(len(colnames))
-  table.setFixedWidth(108 * len(colnames))
+  table.setFixedWidth(120 * len(colnames))
   table.setHorizontalHeaderLabels(colnames)
   table.horizontalHeader().setStyleSheet(f"background-color: #ffedd5; color: {const.ORANGE}; border: none")
   table.horizontalHeader().setFont(Font(12).bold)
