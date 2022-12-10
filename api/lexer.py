@@ -59,7 +59,7 @@ class Lexer:
           token = match.group(0)
           if const.SPACE in match.group(0) and lex[2] != f"{const.YARN} Literal":
             new_token = const.UNDERSCORE.join(match.group(0).split(const.SPACE))
-            line = line.replace(token, new_token)
+            line = line.replace(token, new_token, 1)
             token = new_token
 
           # Append the match to the result
@@ -126,13 +126,13 @@ class Lexer:
       return (False, str(e))
 
 # * Note: Uncomment this code block if needed.
-# if __name__ == '__main__':
-#   code = []
-#   # * NOTE: Replace `01_variables.lol` with your file name.
-#   with open('test/input.lol', 'r') as infile:
-#     for line in infile.readlines():
-#       code.append(line[:-1].strip())
+if __name__ == '__main__':
+  code = []
+  # * NOTE: Replace `01_variables.lol` with your file name.
+  with open('test/input.lol', 'r') as infile:
+    for line in infile.readlines():
+      code.append(line[:-1].strip())
   
-#   # Instantiate the lexer.
-#   lexer = Lexer(code)
-#   print(lexer.analyze())
+  # Instantiate the lexer.
+  lexer = Lexer(code)
+  print(lexer.analyze())
