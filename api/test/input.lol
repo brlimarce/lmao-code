@@ -1,18 +1,7 @@
 BTW start of the program
 HAI
-  VISIBLE "== Start =="
-  WTF?
-    OMG 2
-      VISIBLE "Number 2"
-      VISIBLE "2"
-    OMG 3
-      VISIBLE "Number 3"
-      VISIBLE "3"
-    OMG 4
-      VISIBLE "Number 4"
-      VISIBLE "4"
-    OMGWTF
-      VISIBLE "No matches"
-  OIC
-  VISIBLE "== End =="
+  IM IN YR loopy UPPIN YR var TIL BOTH SAEM 3 AN 4
+    GIMMEH IT
+    VISIBLE loopy
+  IM OUTTA YR loppy hey
 KTHXBYE

@@ -1,5 +1,6 @@
 from utility import constants as const
 from utility.node import Node
+from utility.syntax_helper import *
 from copy import deepcopy
 from analyzers import variables, typecast
 
@@ -76,7 +77,6 @@ def program_start(lex):
     else:
         return (True, lex[2:-1], Node(None, None, lex[0][0], lex[0][1]))
 
-
 """
 * statement()
 | grammar of statement
@@ -84,7 +84,6 @@ def program_start(lex):
 def statement(lex, root):
     _codeblock = codeblock(lex, root)
     return _codeblock
-
 
 """
 * codeblock()
@@ -163,11 +162,18 @@ def codeblock(lex, root):
         return (True, lex)
       return (False, _switch[1], lex[0][2])
     
+    # * Loops
+    if lex[0][1] == "Start of Loop":
+      _loop = loop(lex, root)
+      if _loop[0]:
+        lex = _loop[1]
+        return (True, lex)
+      return (False, _loop[1], lex[0][2])
+    
     # * Expression
     else:
         _expression = expression(lex, root, const.ALL)
         return _expression
-
 
 """
 * expression()
@@ -323,7 +329,7 @@ def conditional(lex, root):
   lex_copy = deepcopy(lex)[2:len(lex)]
 
   # Check if IF CASE is present (required).
-  if len(lex_copy) <= 0 or lex_copy[0][1] != "Keyword for the IF Case":
+  if is_end(lex_copy) or lex_copy[0][1] != "Keyword for the IF Case":
     return (False, "Cannot find YA RLY", root)
   
   # Check the code block inside IF CASE.
@@ -353,7 +359,7 @@ def conditional(lex, root):
     lex_copy = block[1]
   
   # Check if there is an OIC.
-  if len(lex_copy) <= 0 or (len(lex_copy) > 0 and lex_copy[0][1] != "End of Conditional Statement"):
+  if is_end(lex_copy) or (len(lex_copy) > 0 and lex_copy[0][1] != "End of Conditional Statement"):
     return (False, "There is no delimiter for ending the condition", root)
   
   # Add the AST to the root.
@@ -396,11 +402,10 @@ def switch(lex, root):
   # * Declaration
   sroot = Node(root, root, lex[0][0], lex[0][1])
   lex_copy = deepcopy(lex)[2:len(lex)]
-  lex = []
   case_children = []
 
   # Throw an error if DEFAULT case is first.
-  if len(lex_copy) <= 0 or lex_copy[0][1] != "Keyword for the SWITCH Case":
+  if is_end(lex_copy) or lex_copy[0][1] != "Keyword for the SWITCH Case":
     return (False, "Missing OMG keyword", root)
 
   # Check the validity of each case.
@@ -408,8 +413,12 @@ def switch(lex, root):
   while lex_copy != [] and case[0][1] != "Keyword for the Default Case":
     case = lex_copy
     if case[0][1] != "Keyword for the Default Case":
+      # End the switch-case statement.
+      if case[0][1] == "End of Conditional Statement":
+        break
+      
       # Check if the value is a literal.
-      if lex_copy == [] or not variables.is_literal(case[1][1]):
+      if (lex_copy == [] or not variables.is_literal(case[1][1])):
         return (False, "No literal found for OMG case", root)
       case_node = Node(sroot, root, case[0][0], case[0][1])
       value_node = Node(case_node, sroot, case[1][0], case[1][1])
@@ -429,7 +438,7 @@ def switch(lex, root):
     lex_copy = block[1]
   
   # Check if the default case exists.
-  if len(lex_copy) <= 0 or lex_copy[0][1] != "Keyword for the Default Case":
+  if is_end(lex_copy) or lex_copy[0][1] != "Keyword for the Default Case":
     return (False, "Missing OMGWTF in the Switch-Case statement", root)
   
   # Evaluate the code block inside
@@ -447,7 +456,7 @@ def switch(lex, root):
   lex_copy = block[1]
   
   # Check if the condition was ended properly.
-  if len(lex_copy) <= 0 or (len(lex_copy) > 0 and lex_copy[0][1] != "End of Conditional Statement"):
+  if is_end(lex_copy) or (len(lex_copy) > 0 and lex_copy[0][1] != "End of Conditional Statement"):
     return (False, "There is no delimiter for ending the condition", root)
   
   # Add the AST to the root.
@@ -457,39 +466,108 @@ def switch(lex, root):
   lex = lex_copy[2:]
   return (True, lex, root)
 
-# A helper function to evaluate the code
-# block of the case.
-def evaluate_switch_code(lex_copy, root, sroot, default_flag = False):
+"""
+* loop
+| grammar for for/while loops
+"""
+def loop(lex, root):
   # * Declaration
-  block = []
+  lroot = Node(root, root, lex[0][0], lex[0][1])
+  lex_copy = deepcopy(lex)[1:]
+  lex = []
+  loop_children = []
+  
+  # Check if an identifier was used as a loop delimiter.
+  if is_end(lex_copy) or not variables.is_variable(lex_copy[0][1]):
+    return (False, "Missing identifier for the loop", root)
+  loop_children.append(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
+  
+  # Check the operation for the loop.
+  lex_copy = lex_copy[1:]
+  if is_end(lex_copy) or (lex_copy[0][1] != "Loop Increment" and lex_copy[0][1] != "Loop Decrement"):
+    return (False, "Invalid operation on the loop", root)
+  loop_children.append(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
+
+  # Check the statement -- YR <identifier>.
+  lex_copy = lex_copy[1:]
+  if is_end(lex_copy) or lex_copy[0][1] != "Variable Assignment for Loop":
+    return (False, "Missing YR keyword", root)
+  loop_children.append(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
+
+  lex_copy = lex_copy[1:]
+  if is_end(lex_copy) or not variables.is_variable(lex_copy[0][1]):
+    return (False, "Missing identifier for the loop", root)
+  loop_children.append(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
+
+  # Check for TIL/WILE.
+  lex_copy = lex_copy[1:]
+  if is_end(lex_copy) or lex_copy[0][1] != "Keyword for Loop Condition":
+    return (False, "No TIL or WILE", root)
+  loop_children.append(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
+
+  # Get the code block for the expression.
+  lex_copy = lex_copy[1:]
+  code_block = []
   index = 0
-
-  # Get the code block.
-  for e in lex_copy:
-    # End if it reaches NO WAI or OIC.
-    if default_flag:
-      if e[1] == "End of Conditional Statement":
-        break
-    else:
-      if e[1] == "Keyword for the SWITCH Case" or e[1] == "Keyword for the Default Case" or e[1] == "End of Conditional Statement":
-        break
-    block.append(e)
+  
+  while is_end(lex_copy) or lex_copy[0][1] != const.DASH:
+    code_block.append(lex_copy[0])
+    lex_copy = lex_copy[1:]
     index += 1
-  # Check if the statements are valid.
-  result = evaluate_block(block, sroot)
+  code_block.append(lex_copy[0])
+  lex_copy = lex_copy[1:]
+  
+  # Check if the expression is relational or comparison.
+  if is_end(code_block) or (const.COMPARISON_OP not in code_block[0][1] and const.BOOLEAN_OP not in code_block[0][1]):
+    return (False, "Missing boolean/comparison expression", root)
+  result = evaluate_block(code_block, lroot)
   if not result[0]:
-    return (result[0], result[1], root)
-  return (True, lex_copy[index:], sroot)
+    return (False, result[1], root)
+  
+  # Move the node to temporary list.
+  expr_node = Node(lroot, lroot, const.LOOP_EXPR, const.LOOP_EXPR)
+  for child in lroot.children:
+    expr_node.add_child(child)
 
-# Another helper function to evaluate
-# each statement.
-def evaluate_block(code, root):
-  while code != []:
-    result = codeblock(code, root)
-    if not result[0]:
-      return(False, result[1])
-    code = result[1]
-  return (True, result[1])
+  loop_children.append(expr_node)
+  lroot.slice_children(len(lroot.children), len(lroot.children))
+  
+  # Check the validity of each statement.
+  code_block = []
+  while not is_end(lex_copy) and lex_copy[0][1] != "End of Loop":
+    code_block.append(lex_copy[0])
+    lex_copy = lex_copy[1:]
+  
+  # Add the code block to the loop.
+  result = evaluate_block(code_block, lroot)
+  if not result[0]:
+    return (False, result[1], root)
+  
+  # Get the child nodes for each statement.
+  code_node = Node(lroot, lroot, const.LOOP_CODEBLOCK, "Loop Code Block")
+  for child in lroot.children:
+    code_node.add_child(child)
+  
+  loop_children.append(code_node)
+  lroot.slice_children(len(lroot.children), len(lroot.children))
+
+  # Check for IM OUTTA YR.
+  if is_end(lex_copy) or lex_copy[0][1] != "End of Loop":
+    return (False, "Missing IM OUTTA YR in loop", root)
+  loopend = Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1])
+  lex_copy = lex_copy[1:]
+
+  # Check for the label.
+  if is_end(lex_copy) or not variables.is_variable(lex_copy[0][1]):
+    return (False, "Missing identifier for the loop", root)
+  loopend.add_child(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
+  loop_children.append(loopend)
+
+  # Add the children to the loop root.
+  for child in loop_children:
+    lroot.add_child(child)
+  lroot.print_tree()
+  return (True, lex, root)
 
 """
 * arithmetic()

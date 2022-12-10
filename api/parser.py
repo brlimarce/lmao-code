@@ -108,7 +108,7 @@ if __name__ == "__main__":
       if node != None:
         node.print_tree()
 
-      # * Semantics
-      analyzer = semantics.Semantics(node)
-      result = analyzer.analyze()
-      print(f"Result: {result}")
+      # # * Semantics
+      # analyzer = semantics.Semantics(node)
+      # result = analyzer.analyze()
+      # print(f"Result: {result}")
