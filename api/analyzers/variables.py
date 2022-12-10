@@ -71,7 +71,7 @@ def analyze(node: Node, lookup_table: dict) -> dict:
       
       # Reassign the variable.
       lookup_table[varname] = {
-        const.VALUE_KEY: lookup_table[temp_varname],
+        const.VALUE_KEY: value,
         const.TYPE_KEY: (children[0].type).replace(children[0].type, "").strip()
       }
 

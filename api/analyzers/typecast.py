@@ -142,7 +142,7 @@ def YARN(value) -> tuple:
   return (new_value, const.YARN)
 
 # any -> TROOF
-def TROOF(value) -> dict:
+def TROOF(value) -> tuple:
   # NUMBR and NUMBAR Literals
   new_value = const.FAIL
   if is_numbr(value)[0] or is_numbar(value)[0]:

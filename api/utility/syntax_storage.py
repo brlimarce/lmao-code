@@ -54,7 +54,6 @@ def comments(lex):
             lex.remove(c)
         return (True, lex)
 
-
 """
 * program_start()
 | checks for the start and end of the program
@@ -89,7 +88,7 @@ def statement(lex, root):
 * codeblock()
 | grammar of codeblock
 """
-def codeblock(lex, root):
+def codeblock(lex, root, is_gtfo=False):
     # statement= [["expression"],["loop"],["switch_case"],["ifthen"],["userinput"],
     # ["vardeclaration"],["print"],["typecasting"],["concatenation"],["assignment"]]
     # * Print
@@ -170,6 +169,14 @@ def codeblock(lex, root):
         return (True, lex)
       return (False, _loop[1], lex[0][2])
     
+    # * GTFO Statement
+    if lex[0][1] == "Loop Break":
+      _break = break_block(lex, root, is_gtfo)
+      if _break[0]:
+        lex = _break[1]
+        return (True, lex)
+      return (False, _break[1], lex[0][2])
+    
     # * Expression
     else:
         _expression = expression(lex, root, const.ALL)
@@ -209,26 +216,18 @@ def expression(lex, root, type):
             return (False, "Invalid comparison", lex[0][2])
 
     else:
+        # Get the unidentified line in the program.
+        error_block = []
+        for element in lex:
+          if element[1] == const.DASH:
+            break
+          error_block.append(element[0])
+        error = f"Cannot identify {' '.join(error_block)}"
+
+        # Display the error.
         if len(lex[0]) < 3:
-          return (False, "There is an unidentified block in the program", 0)
-        return (False, "Syntax error", lex[0][2])
-
-
-# """
-# * print() 
-# * calls printable() , printrec(), varident(), literal()
-# | grammar for printing
-# """
-# def print_statement(lex, root):
-#     _expression = (const.ALL, "expression")
-#     _print = [["Output", varident()],
-#               ["Output", literal()],
-#               ["Output", _expression],
-#               ["Output", varident(), "printrec"]]
-#     return abstraction(_print, lex, root)
-
-# def printrec():
-#     return [[printrec()], [varident()], [literal()]]
+          return (False, error, 0)
+        return (False, error, lex[0][2])
 
 """
 * print_statement()
@@ -284,7 +283,6 @@ def typecast(lex, root):
 def datatype():
     return "TYPE Literal"
 
-
 """
 * assignment()
 * calls varident(), literal()
@@ -297,7 +295,6 @@ def assignment(lex, root):
                    [varident(), "Variable Assignment", _expression]]
 
     return abstraction(_assignment, lex, root)
-
 
 """
 * vardeclaration()
@@ -523,7 +520,7 @@ def loop(lex, root):
   # Check if the expression is relational or comparison.
   if is_end(code_block) or (const.COMPARISON_OP not in code_block[0][1] and const.BOOLEAN_OP not in code_block[0][1]):
     return (False, "Missing boolean/comparison expression", root)
-  result = evaluate_block(code_block, lroot)
+  result = evaluate_block(code_block, lroot, True)
   if not result[0]:
     return (False, result[1], root)
   
@@ -542,7 +539,7 @@ def loop(lex, root):
     lex_copy = lex_copy[1:]
   
   # Add the code block to the loop.
-  result = evaluate_block(code_block, lroot)
+  result = evaluate_block(code_block, lroot, True)
   if not result[0]:
     return (False, result[1], root)
   
@@ -575,6 +572,25 @@ def loop(lex, root):
     lroot.add_child(child)
   root.add_child(lroot)
   lex = lex_copy[1:]
+  return (True, lex, root)
+
+"""
+* break_block()
+| grammar for breaking loops
+| and conditions
+"""
+def break_block(lex, root, is_gtfo):
+  # Throw an exception if GTFO is outside
+  # of conditionals and loops.
+  if not is_gtfo:
+    return (False, "No conditional or loop to break", root)
+  root.add_child(Node(root, root, lex[0][0], lex[0][1]))
+
+  # GTFO should only be the only one in a line.
+  lex = lex[1:]
+  if is_end(lex) or lex[0][1] != const.DASH:
+    return (False, "There is an unidentified block in the program", root)
+  lex = lex[1:]
   return (True, lex, root)
 
 """

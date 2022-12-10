@@ -196,7 +196,7 @@ if __name__ == '__main__':
   # node = parse(lex)
   # # node.print_tree()
 
-  # * Semantics Analyzer
-  analyzer = Semantics(root)
-  result = analyzer.analyze()
-  print(result)
+  # # * Semantics Analyzer
+  # analyzer = Semantics(root)
+  # result = analyzer.analyze()
+  # print(result)

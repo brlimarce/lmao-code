@@ -41,6 +41,7 @@ def analyze_concat(node: Node, lookup_table: dict) -> tuple:
 def concat(children: list, lookup_table: dict) -> str:
   # * Declaration
   stringset = []
+  error_msg = f"Cannot implicitly cast {const.NOOB} into {const.YARN}"
 
   # Append each value in the set.
   for child in children:
@@ -51,9 +52,15 @@ def concat(children: list, lookup_table: dict) -> str:
         if not variables.is_exist(child.lexeme, lookup_table):
           raise Exception(f"{child.lexeme} does not exist.")
         else:
+          # Raise an error for NOOBs.
+          if child.lexeme == const.NOOB:
+            raise Exception(error_msg)
           stringset.append(YARN(lookup_table[child.lexeme][const.VALUE_KEY])[0].replace("\"", ""))
       # * Literal
       elif variables.is_literal(child.type):
+        # Raise an error for NOOBs.
+        if child.lexeme == const.NOOB:
+          raise Exception(error_msg)
         stringset.append(YARN(child.lexeme)[0].replace("\"", ""))
       # * Expression
       else:

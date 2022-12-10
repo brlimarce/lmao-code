@@ -11,7 +11,7 @@ def is_end(lex):
   return len(lex) <= 0
 
 # Evaluate the code block of a structured construct.
-def evaluate_block(code, root):
+def evaluate_block(code, root, is_gtfo):
   while code != []:
     # Variable declaration should not be in
     # conditional statements.
@@ -19,7 +19,7 @@ def evaluate_block(code, root):
       return (False, "Cannot declare variables in this scope")
     
     # Evaluate the expression.
-    result = syntax_storage.codeblock(code, root)
+    result = syntax_storage.codeblock(code, root, is_gtfo)
     if not result[0]:
       return(False, result[1])
     code = result[1]
@@ -45,7 +45,7 @@ def evaluate_code(lex_copy, root, croot, else_flag = False):
     index += 1
   
   # Check if the statements are valid.
-  result = evaluate_block(block, croot)
+  result = evaluate_block(block, croot, False)
   if not result[0]:
     return (result[0], result[1], root)
   return (True, lex_copy[index:], croot)
@@ -68,7 +68,7 @@ def evaluate_switch_code(lex_copy, root, sroot, default_flag = False):
     block.append(e)
     index += 1
   # Check if the statements are valid.
-  result = evaluate_block(block, sroot)
+  result = evaluate_block(block, sroot, True)
   if not result[0]:
     return (result[0], result[1], root)
   return (True, lex_copy[index:], sroot)

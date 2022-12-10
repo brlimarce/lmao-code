@@ -106,14 +106,13 @@ if __name__ == "__main__":
               if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
                       symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
                   lex.append(("Parser Delimiter", "-"))
-      
       node = parse(lex)
       if node != None:
         node.print_tree()
 
-      # * Semantics
-      analyzer = semantics.Semantics(node)
-      result = analyzer.analyze()
-      print(f"Result: {result}")
+      # # * Semantics
+      # analyzer = semantics.Semantics(node)
+      # result = analyzer.analyze()
+      # print(f"Result: {result}")
   except Exception as e:
     print(str(e))

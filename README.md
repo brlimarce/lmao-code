@@ -1,13 +1,11 @@
 <!-- Heading -->
-<img src="assets/banner.png">
-<center>
-  🐱&ensp;An esoteric programming interpreter
-</center> <br />
+<img src="assets/banner.png"> <br />
+
+<p align="center"> 🐱&ensp;An esoteric programming interpreter </p>
+<hr /> <br />
 
 <!-- Installation -->
 ### **🍃&ensp;Virtual Environment**
-
----
 This repository relies on using a **virtual environment (venv)** so that the downloaded packages don't reflect on the machine. <br />
 
 **Activate** the virtual environment (venv) before **running the Python file.** Otherwise, the installed dependencies won't work.
@@ -29,9 +27,6 @@ deactivate
 <br />
 
 ### **📤&ensp;Dependencies**
-
----
-
 To install packages, **run VENV first** *(see Section A).* Then, **update requirements.txt** after installing that package.
 
 ```bash
