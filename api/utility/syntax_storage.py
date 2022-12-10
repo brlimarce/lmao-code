@@ -208,6 +208,14 @@ def expression(lex, root):
             return (True, lex)
         else:
             return (False, "Invalid operation", lex[0][2])
+    
+    # * Smoosh
+    if lex[0][1] == "String Concatenation":
+      _concat = concat(lex, root)
+      if _concat[0]:
+        lex = _concat[1]
+        return (True, lex, lex[0][2])
+      return (False, "Invalid concatenation", lex[0][2])
 
     else:
         # Get the unidentified line in the program.
@@ -311,6 +319,7 @@ def vardeclaration(lex, root):
 def concat(lex, root):
     index = 0
     result = True
+    print("\n- - -\n", lex)
     
     for e in lex:
         if e[1] == const.DASH:
@@ -330,11 +339,12 @@ def concat(lex, root):
     if index == 1:
       result = False
 
-    # Translate into an AST.
-    node = get_syntax_tree(lex[:index], root)
-    root.add_child(node)
+    # # Translate into an AST.
+    # node = get_syntax_tree(lex[:index], root)
+    # root.add_child(node)
 
     lex = lex[index + 1:]
+    print("\n= = =\n", lex)
     return (result, lex, root)
 
 """
@@ -641,10 +651,7 @@ def operation(lex, root, operations):
       
     # Create a node for the operation block.
     opnode = Node(root, root, const.OP_BLOCK, const.OP_BLOCK)
-    for tup in stack_cpy:
-      opnode.add_child(tup)
-    root.add_child(opnode)
-    return(flag_value, lex[cnt:], root, stack_cpy)
+    return(flag_value, lex[cnt:], root, opnode)
 
 """
 * vardeclaration()
@@ -703,13 +710,22 @@ def abstraction(grammar, lex, root):
                         flag = False
                 index = index+1
             if flag == True and lex[index][1] == const.DASH:
+                # Slice the statement.
+                index = 0
+                lex_copy = deepcopy(lex)
+                while not is_end(lex_copy) and lex_copy[0][1] != const.DASH:
+                  index += 1
+                  lex_copy = lex_copy[1:]
+
                 # Translate into an AST.
                 node = get_syntax_tree(lex[:index], root)
+                print("🚀 ~ file: syntax_storage.py:722 ~ lex[:index]", lex[:index])
                 root.add_child(node)
 
                 # Set the other needed values.
                 result = True
                 lex = lex[index + 1:]
+                print("🚀 ~ file: syntax_storage.py:727 ~ lex", lex)
                 break
             flag = True
             index = 0
