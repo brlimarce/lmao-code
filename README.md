@@ -1,6 +1,6 @@
 <!-- Heading -->
 <img src="assets/banner.png">
-<br /> <br />
+<br />
 
 <!-- Installation -->
 ### **A. Virtual Environment**
