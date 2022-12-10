@@ -120,7 +120,7 @@ def codeblock(lex, root):
             return (False, "Invalid variable declaration", lex[0][2])
     
     # * Typecasting
-    if lex[0][1] == const.TYPECAST[0] or lex[1][1] == const.TYPECAST[1] or (len(lex) > 2 and lex[2][1] == const.TYPECAST[0]):
+    if lex[0][1] == const.TYPECAST[0] or (len(lex) > 2 and lex[1][1] == const.TYPECAST[1]) or (len(lex) > 3 and lex[2][1] == const.TYPECAST[0]):
         _typecast = typecast(lex, root)
         if _typecast[0] == True:
             lex = _typecast[1]
@@ -129,7 +129,7 @@ def codeblock(lex, root):
             return (False, "Invalid typecasting", lex[0][2])
    
     # * Assignment
-    if lex[1][1] == const.ASSIGNMENT:
+    if (len(lex) > 2 and lex[1][1] == const.ASSIGNMENT):
         _assignment = assignment(lex, root)
         if _assignment[0] == True:
             lex = _assignment[1]
@@ -209,7 +209,9 @@ def expression(lex, root, type):
             return (False, "Invalid comparison", lex[0][2])
 
     else:
-        return (False, "Syntax Error", lex[0][2])
+        if len(lex[0]) < 3:
+          return (False, "There is an unidentified block in the program", 0)
+        return (False, "Syntax error", lex[0][2])
 
 
 """
@@ -367,32 +369,6 @@ def conditional(lex, root):
   lex = lex_copy[2:]
   
   return (True, lex, root)
-
-# A helper function for conditionals to evaluate
-# the entire code block.
-def evaluate_code(lex_copy, root, croot, else_flag = False):
-  # * Declaration
-  lex_copy = lex_copy[2:len(lex_copy)]
-  block = []
-  index = 0
-
-  # Get the code block.
-  for e in lex_copy:
-    # End if it reaches NO WAI or OIC.
-    if else_flag:
-      if e[1] == "Keyword for the ELSE Case" or e[1] == "End of Conditional Statement":
-        break
-    else:
-      if e[1] == "End of Conditional Statement":
-        break
-    block.append(e)
-    index += 1
-  
-  # Check if the statements are valid.
-  result = evaluate_block(block, croot)
-  if not result[0]:
-    return (result[0], result[1], root)
-  return (True, lex_copy[index:], croot)
 
 """
 * switch()
@@ -562,6 +538,10 @@ def loop(lex, root):
     return (False, "Missing identifier for the loop", root)
   loopend.add_child(Node(lroot, lroot, lex_copy[0][0], lex_copy[0][1]))
   loop_children.append(loopend)
+  lex_copy = lex_copy[1:]
+  
+  if not is_end(lex_copy) and lex_copy[0][1] != const.DASH:
+    return (False, "There is an extra block in the loop", root)
 
   # Add the children to the loop root.
   for child in loop_children:

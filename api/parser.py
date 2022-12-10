@@ -80,13 +80,16 @@ def parse(lex):
 
 # Main Program
 if __name__ == "__main__":
+  try:
     # * Lexical Analyzer
     code = []
-    with open("api/test/input.lol", "r") as infile:
+    with open("test/input.lol", "r") as infile:
         code = [line[:-1].strip() for line in infile.readlines()
                 if line[:-1].strip() != ""]
     result = lexer.Lexer(code).analyze()
     symbol_table = result[1]
+    if not result[0]:
+      raise Exception(result[1])
 
     # * Uncomment to debug the lexer.
     # if symbol_table != None:
@@ -112,3 +115,5 @@ if __name__ == "__main__":
       # analyzer = semantics.Semantics(node)
       # result = analyzer.analyze()
       # print(f"Result: {result}")
+  except Exception as e:
+    print(str(e))
