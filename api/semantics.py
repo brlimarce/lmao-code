@@ -17,11 +17,8 @@ class Semantics:
   # * Constructor
   def __init__(self, root):
     self._root = root
-    # self._lookup_table = {const.IT: { 
-    #   const.VALUE_KEY: const.NOOB, const.TYPE_KEY: const.NOOB 
-    # }}
     self._lookup_table = {const.IT: { 
-      const.VALUE_KEY: 2, const.TYPE_KEY: "NUMBR Literal"
+      const.VALUE_KEY: const.NOOB, const.TYPE_KEY: const.NOOB 
     }}
   
   @property
@@ -113,8 +110,7 @@ class Semantics:
 
 if __name__ == '__main__':
   root = Node(None, None, "HAI", "Program Start")
-   
-
+  
   # # ** SWITCH STATEMENT **
   # child1 = Node(root, root, "WTF?", "Start of SWITCH Case Statement")
   # root.add_child(child1)

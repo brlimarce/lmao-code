@@ -1,20 +1,18 @@
+BTW start of the program
 HAI
- BTW vardeclaration
- I HAS A thing ITZ SUM OF 2 AN 5
- I HAS A thing ITZ BOTH SAEM 5 AN 2
- BTW assignment
- var1 R DIFF OF 2 AN 5
- num R 5
- BTW output
- VISIBLE BIGGR OF 5 AN "9"
- BTW comparison and relational
- BOTH SAEM 5 AN 2
- BOTH SAEM var AN BIGGR OF num AN SUM OF 2 AN 5
- BTW concat
- SMOOSH var AN 12 AN 15 AN "yes" AN AAA 
- BTW typecasting
- var IS NOW A NUMBAR
+  VISIBLE "== Start =="
+  WTF?
+    OMG 2
+      VISIBLE "Number 2"
+      VISIBLE "2"
+    OMG 3
+      VISIBLE "Number 3"
+      VISIBLE "3"
+    OMG 4
+      VISIBLE "Number 4"
+      VISIBLE "4"
+    OMGWTF
+      VISIBLE "No matches"
+  OIC
+  VISIBLE "== End =="
 KTHXBYE
-
-
-

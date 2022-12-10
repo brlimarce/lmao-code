@@ -58,6 +58,10 @@ class Node:
   def type(self) -> str:
     return self._type
 
+  # Setter
+  def set_root(self, r):
+    self._root = r
+
   """
   * add_child()
   | Add a child node to the
@@ -77,10 +81,10 @@ class Node:
   | index (int): Index of the child
 
   * Returns
-  | list: A copy of the children with the removed element
+  | Node: The popped child
   """
-  def remove_child(self, index: int) -> list:
-    return deepcopy(self._children.pop(index))
+  def remove_child(self, index: int):
+    return self._children.pop(index)
   
   """
   * slice_children()
@@ -91,11 +95,11 @@ class Node:
   | end (int): The ending index
 
   * Returns
-  | list: A copy of the new list of children
+  | list: The new list of children
   """
   def slice_children(self, start: int, end: int) -> list:
-    new_children = deepcopy(self._children)
-    return new_children[start:end]
+    self._children = self._children[start:end]
+    return self._children
   
   """
   * print_tree()

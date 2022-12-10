@@ -1,4 +1,5 @@
 import lexer
+import semantics
 from utility import syntax_storage as grammar
 from utility.node import Node
 
@@ -81,23 +82,33 @@ def parse(lex):
 if __name__ == "__main__":
     # * Lexical Analyzer
     code = []
-    with open("test/input.lol", "r") as infile:
+    with open("api/test/input.lol", "r") as infile:
         code = [line[:-1].strip() for line in infile.readlines()
                 if line[:-1].strip() != ""]
     result = lexer.Lexer(code).analyze()
     symbol_table = result[1]
 
+    # * Uncomment to debug the lexer.
+    # if symbol_table != None:
+    #   print(f"Symbol Table: {symbol_table}")
+
     # * Syntax Analyzer
     lex = []
-    for k in symbol_table:
-        for i in symbol_table[k]:
-            i=i+(k,)
-            lex.append(i)
-        if symbol_table[k] != []:
-            if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
-                    symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
-                lex.append(("Parser Delimiter", "-"))
-    
-    node = parse(lex)
-    # node.print_tree()
-        
+    if result[0]:
+      for k in symbol_table:
+          for i in symbol_table[k]:
+              i=i+(k,)
+              lex.append(i)
+          if symbol_table[k] != []:
+              if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
+                      symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
+                  lex.append(("Parser Delimiter", "-"))
+      
+      node = parse(lex)
+      if node != None:
+        node.print_tree()
+
+      # * Semantics
+      analyzer = semantics.Semantics(node)
+      result = analyzer.analyze()
+      print(f"Result: {result}")

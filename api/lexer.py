@@ -1,5 +1,7 @@
-from api.utility import constants as const
-from api.utility import token_regex as tokex
+# from api.utility import constants as const
+# from api.utility import token_regex as tokex
+from utility import constants as const
+from utility import token_regex as tokex
 import re
 
 """
@@ -55,7 +57,7 @@ class Lexer:
           # Replace the space delimiter of keywords with multiple
           # words into underscores.
           token = match.group(0)
-          if const.SPACE in match.group(0):
+          if const.SPACE in match.group(0) and lex[2] != f"{const.YARN} Literal":
             new_token = const.UNDERSCORE.join(match.group(0).split(const.SPACE))
             line = line.replace(token, new_token)
             token = new_token

@@ -1,4 +1,5 @@
 from api.lexer import Lexer
+from api import parser
 
 from utility.gui.font import Font
 from utility.gui import helper
@@ -69,7 +70,7 @@ class App(QMainWindow):
 
     # Add the header title.
     title_root = QHBoxLayout()
-    title_root.setContentsMargins(0, 0, 0, 0)
+    title_root.setContentsMargins(0, 0, 0, 4)
     title_root.setSpacing(20)
 
     icon_lbl = QLabel()

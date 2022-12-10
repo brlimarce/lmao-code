@@ -1,3 +1,6 @@
 HAI
-  VISIBLE v
+  BTW valid
+  SMOOSH
 KTHXBYE
+OBTW
+TLDR

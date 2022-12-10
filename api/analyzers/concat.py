@@ -51,10 +51,10 @@ def concat(children: list, lookup_table: dict) -> str:
         if not variables.is_exist(child.lexeme, lookup_table):
           raise Exception(f"{child.lexeme} does not exist.")
         else:
-          stringset.append(YARN(lookup_table[child.lexeme][const.VALUE_KEY])[0])
+          stringset.append(YARN(lookup_table[child.lexeme][const.VALUE_KEY])[0].replace("\"", ""))
       # * Literal
       elif variables.is_literal(child.type):
-        stringset.append(YARN(child.lexeme)[0])
+        stringset.append(YARN(child.lexeme)[0].replace("\"", ""))
       # * Expression
       else:
         raise Exception("Expressions are not yet supported.")
