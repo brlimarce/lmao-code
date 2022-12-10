@@ -25,7 +25,7 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
     var = node.children[childindex]
     #PUSHING VALUES TO STACK, either LITERAL or Variable
     if typecast.is_literal(var.type):
-      exprStack.push((var.lexeme, const.LITERAL)) 
+      exprStack.push(check_literal(var)) 
     elif typecast.is_variable(var.type):
       if variables.is_exist(var.lexeme, lookup_table):
         exprStack.push((lookup_table[var.lexeme][const.VALUE_KEY], lookup_table[var.lexeme][const.TYPE_KEY]))
@@ -174,9 +174,22 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         exprStack.push((const.WIN, const.TROOF))
       else:
         exprStack.push((const.FAIL, const.TROOF))
-
   return exprStack.pop()
-      
+
+
+"""
+* check_literal()
+| The method to check whether the literal given is either a float or an int
+* Parameters
+| child: child lexeme
+* Returns
+| tuple: contains value and type
+"""
+def check_literal(child: tuple) -> tuple:
+    if child[0].contains("."):
+        return typecast.NUMBAR(child[0])
+    else:
+        return typecast.NUMBR(child[0])
 
 """
 * arith_type_check()
