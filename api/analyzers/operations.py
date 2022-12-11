@@ -214,12 +214,11 @@ def check_literal(child: tuple) -> tuple:
 """
 def arith_type_check(var1: tuple, var2: tuple) -> list:
   #check if var1 is literal, numbar or numbr, then typecast
-
   value1 = 0
   value2 = 0
 
   #check var1
-  if var1[1] == const.LITERAL or var1[1] == f"{const.NUMBAR} Literal" or var1[1] == f"{const.NUMBR} Literal":
+  if var1[1] == const.LITERAL or const.NUMBAR in var1[1] or const.NUMBR in var1[1]:
     value1 = float(var1[0])
   elif var1[1] == f"{const.TROOF} Literal":
     value1 = float(typecast.NUMBAR(var1[0])[0])

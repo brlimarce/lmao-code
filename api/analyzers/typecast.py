@@ -33,9 +33,9 @@ def analyze(node: Node, lookup_table: dict) -> dict:
   result = ()
 
   # * YARN
-  # TODO: Support with IS NOW A
-  var = node.children[0].lexeme
+  var = node.children[0].lexeme if node.type == "Explicit Typecasting" else node.lexeme
   value = value[const.VALUE_KEY]
+
   if cast_type == const.YARN:
     result = YARN(value)
   # * NOOB

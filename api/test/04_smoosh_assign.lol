@@ -1,7 +1,3 @@
-OBTW
-  Status: RUNNING
-  Remark/s: Support typecasting
-TLDR
 HAI
     BTW variable dec
     I HAS A x

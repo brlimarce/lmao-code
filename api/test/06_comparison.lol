@@ -1,7 +1,3 @@
-OBTW
-  Status: RUNNING
-  Remark/s: Wrong output.
-TLDR
 HAI
     I HAS A x
     I HAS A y

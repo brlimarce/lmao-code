@@ -16,22 +16,33 @@ HAI
 	VISIBLE "Choice: "
 	GIMMEH choice
 
-	choice
+  I HAS A diff ITZ 0
+  I HAS A prod ITZ 0
+  I HAS A sqarea ITZ 0
+
+	BTW IT R choice
+  choice
 	WTF?
 		OMG 1
 			VISIBLE "Enter birth year: "
 			GIMMEH input
-			VISIBLE DIFF OF 2022 AN input
+			BTW VISIBLE DIFF OF 2022 AN input
+      diff R DIFF OF 2022 AN input
+      VISIBLE diff
 			GTFO
 		OMG 2
 			VISIBLE "Enter bill cost: "
 			GIMMEH input
-			VISIBLE "Tip: " PRODUCKT OF input AN 0.1
+			BTW VISIBLE "Tip: " PRODUCKT OF input AN 0.1
+      prod R PRODUKT OF input AN 0.1
+      VISIBLE prod
 			GTFO
 		OMG 3
 			VISIBLE "Enter width: "
 			GIMMEH input
-			VISIBLE "Square Area: " PRODUCKT OF input AN input
+			BTW VISIBLE "Square Area: " PRODUCKT OF input AN input
+      sqarea R PRODUKT OF input AN input
+      VISIBLE sqarea
 			GTFO
 		OMG 0
 			VISIBLE "Goodbye"

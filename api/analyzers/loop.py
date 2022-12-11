@@ -74,5 +74,4 @@ def analyze(node: Node, lookup_table: dict, executable) -> dict:
       const.VALUE_KEY: update_val,
       const.TYPE_KEY: const.NUMBR
     }
-  
   return lookup_table

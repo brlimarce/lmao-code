@@ -91,6 +91,16 @@ def statement(lex, root):
 def codeblock(lex, root, is_gtfo=False):
     # statement= [["expression"],["loop"],["switch_case"],["ifthen"],["userinput"],
     # ["vardeclaration"],["print"],["typecasting"],["concatenation"],["assignment"]]
+    
+    # * Identifier (for SMOOSH)
+    if lex[0][1] == "Identifier" and lex[1][1] == const.DASH:
+      _smoosh = smoosh_var(lex, root)
+      if _smoosh[0] == True:
+          lex = _smoosh[1]
+          return (True, lex)
+      else:
+          return (False, "Invalid variable", lex[0][2])
+    
     # * Print
     if lex[0][1] == const.PRINT:
         _print = print_statement(lex, root)
@@ -232,6 +242,16 @@ def expression(lex, root):
         if len(lex[0]) < 3:
           return (False, error, 0)
         return (False, error, lex[0][2])
+
+"""
+* smoosh_var()
+| Transfer the value of a variable to
+| IT if the former exists.
+"""
+def smoosh_var(lex, root):
+  root.add_child(Node(root, root, lex[0][0], lex[0][1]))
+  lex = lex[2:]
+  return (True, lex)
 
 """
 * print_statement()
@@ -377,6 +397,7 @@ def conditional(lex, root):
   lex_copy = block[1]
 
   # Check if an ELSE block exists.
+  else_node = None
   if len(lex_copy) > 0 and lex_copy[0][1] == "Keyword for the ELSE Case":
     else_node = Node(croot, root, lex_copy[0][0], lex_copy[0][1])
     block = evaluate_code(lex_copy, root, croot)
@@ -387,9 +408,11 @@ def conditional(lex, root):
       else_node.add_child(child)
     croot.slice_children(len(croot.children), len(croot.children))
     
-    croot.add_child(ifnode)
-    croot.add_child(else_node)
-    lex_copy = block[1]
+  # Add the IF and ELSE (if applicable) nodes.
+  croot.add_child(ifnode)
+  if else_node != None:
+      croot.add_child(else_node)
+  lex_copy = block[1]
   
   # Check if there is an OIC.
   if is_end(lex_copy) or (len(lex_copy) > 0 and lex_copy[0][1] != "End of Conditional Statement"):

@@ -1,8 +1,3 @@
-OBTW
-  Status: NOT FULLY WORKING
-  Remark/s: (Error) -- Invalid assignment. NonType has no attribute `children`.
-  NOT only works on standalone operations
-TLDR
 HAI
     BTW variable dec
     I HAS A x

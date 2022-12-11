@@ -56,13 +56,7 @@ class Semantics:
       try:
         # * IF-THEN Statement
         if child.type == "Start of IF-THEN Statement":
-          result = conditional.analyze_ifthen(child, self._lookup_table)
-          self._lookup_table = result[1] # Store lookup table.
-
-          # Execute the code block in the matching CASE.
-          if result[0] != None:
-            for code in result[0].children:
-              self.codeblock(code)
+          self._lookup_table = conditional.analyze_ifthen(child, self._lookup_table, self)
         # * SWITCH-CASE Statement
         elif child.type == "Start of SWITCH Case Statement":
           conditional.analyze_switch(child, self._lookup_table[const.IT][const.VALUE_KEY], self)
@@ -93,10 +87,21 @@ class Semantics:
   def codeblock(self, child: Node):
     # * Operations
     if child.type == const.OP_BLOCK:
-      self._lookup_table[const.IT] = expression.evaluate_expr(child, self._lookup_table)
+        result = expression.evaluate_expr(child, self._lookup_table)
+        self._lookup_table[const.IT] = {
+            const.VALUE_KEY: result[0],
+            const.TYPE_KEY: result[1]
+        }
     # * String Concatenation
     elif child.type == "String Concatenation":
-      self._lookup_table[const.IT] = expression.evaluate_expr(child, self._lookup_table)
+        result = expression.evaluate_expr(child, self._lookup_table)
+        self._lookup_table[const.IT] = {
+            const.VALUE_KEY: result[0],
+            const.TYPE_KEY: result[1]
+        }
+    # * Variable Assignment (for SMOOSH)
+    elif child.type == "Identifier" and len(child.children) <= 0:
+        self._lookup_table = variables.analyze_smoosh_var(child.lexeme, self._lookup_table)
     # * Variable Declaration
     elif child.type == "Variable Declaration":
       self._lookup_table = variables.analyze(child, self._lookup_table)
@@ -112,3 +117,6 @@ class Semantics:
     # * Explicit Typecasting
     elif child.type == "Explicit Typecasting":
       self._lookup_table = typecast.analyze(child, self._lookup_table)
+    # * Explicit Typecasting (IS_NOW_A keyword)
+    elif child.type == "Identifier" and (len(child.children) > 0 and child.children[0].type == "Delimiter for Typecasting"):
+        self._lookup_table = typecast.analyze(child, self._lookup_table)

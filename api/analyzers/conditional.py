@@ -47,20 +47,26 @@ from analyzers.typecast import TROOF
 * Returns
 | tuple: Contains the code block and the updated lookup table
 """
-def analyze_ifthen(node: Node, lookup_table: dict) -> tuple:
+def analyze_ifthen(node: Node, lookup_table: dict, executable) -> tuple:
   # Typecast the value of IT into TROOF.
-  lookup_table[const.IT] = TROOF(lookup_table[const.IT]["value"])
-  code_block = None
+  if const.TROOF not in lookup_table[const.IT][const.TYPE_KEY]:
+    result = TROOF(lookup_table[const.IT][const.VALUE_KEY])
+    lookup_table[const.IT] = {
+        const.VALUE_KEY: result[0],
+        const.TYPE_KEY: result[1]
+    }
   
   # Evaluate the conditional statement.
-  if lookup_table[const.IT] == const.WIN:
-    # Return the code block for WIN.
-    code_block = node.children[0]
+  if lookup_table[const.IT][const.VALUE_KEY] == const.WIN:
+      # Return the code block for WIN.
+      for child in node.children[0].children:
+          executable.codeblock(child)
   else:
-    # Check if an ELSE case exists.
-    if len(node.children) > 1 and node.children[1].type == "Keyword for the ELSE Case":
-      code_block = node.children[1]
-  return (code_block, lookup_table)
+      # Check if an ELSE case exists.
+      if len(node.children) > 1 and node.children[1].type == "Keyword for the ELSE Case":
+          for child in node.children[1].children:
+              executable.codeblock(child)
+  return lookup_table
 
 """
 * analyze_switch()
@@ -69,9 +75,9 @@ def analyze_ifthen(node: Node, lookup_table: dict) -> tuple:
 """
 def analyze_switch(node: Node, it_value: dict, executable) -> list:
   # Run through the cases.
-  code = []
   DEFAULT_TYPE = "Keyword for the Default Case"
   is_gtfo = False
+  is_case = False
   
   for case in node.children:
     if case.type != DEFAULT_TYPE:
@@ -81,17 +87,16 @@ def analyze_switch(node: Node, it_value: dict, executable) -> list:
       
       # Execute the code block.
       if value == it_value:
+        is_case = True
         for child in block:
           if child.type == "Loop Break":
             is_gtfo = True
             break
           executable.codeblock(child)
     # Run the DEFAULT case (if applicable).
-    elif case.type == DEFAULT_TYPE and len(code) < 1:
-      block = case.children[1:]
-      for child in block:
+    elif case.type == DEFAULT_TYPE and not is_case:
+      for child in case.children:
         executable.codeblock(child)
-    
     # End the loop on GTFO keyword.
     if is_gtfo:
       break

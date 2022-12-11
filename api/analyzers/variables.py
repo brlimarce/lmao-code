@@ -133,6 +133,24 @@ def analyze_assignment(node: Node, lookup_table: dict) -> dict:
   return lookup_table
 
 """
+* analyze_smoosh_var()
+| Assign the value of a variable
+| to the IT variable.
+"""
+def analyze_smoosh_var(var: str, lookup_table: dict):
+  # Throw an error is variable does not exist.
+  if not is_exist(var, lookup_table):
+    raise Exception(f"{var} does not exist.")
+  
+  # Assign the value to the IT variable.
+  lookup_table[const.IT] = {
+    const.VALUE_KEY: lookup_table[var][const.VALUE_KEY],
+    const.TYPE_KEY: lookup_table[var][const.TYPE_KEY]
+  }
+
+  return lookup_table
+
+"""
 * is_exist()
 | Checks if the variable exists in
 | the lookup table.

@@ -1,7 +1,3 @@
-OBTW
-  Status: NOT WORKING
-  Remark/s: Should check return values.
-TLDR
 HAI
 
 	I HAS A choice
@@ -44,7 +40,7 @@ TLDR
 		NO WAI
 			VISIBLE "Invalid Input!"
 	OIC
-
+  
 	DIFFRINT BIGGR OF 3 AN choice AN 3
 	O RLY?
 		YA RLY
