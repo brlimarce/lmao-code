@@ -22,102 +22,106 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
   for childindex in range(0, terminal_child):
     var = node.children[childindex]
     #PUSHING VALUES TO STACK, either LITERAL or Variable
+    if var[0] == "Parser Delimiter":
+      break
+
     if variables.is_literal(var[1]):
-      exprStack.insert(0, check_literal(var)) 
+      exprStack.append(check_literal(var)) 
     elif variables.is_variable(var[1]):
       if variables.is_exist(var[0], lookup_table):
-        exprStack.insert(0, (lookup_table[var[0]][const.VALUE_KEY], lookup_table[var[0]][const.TYPE_KEY]))
+        exprStack.append((float(lookup_table[var[0]][const.VALUE_KEY]), lookup_table[var[0]][const.TYPE_KEY]))
       else: #catch unitialized variables
         raise Exception(f"Variable has not been initialized.")
     #OPERATIONS
 
     # //ARITHMETIC OPERATIONS
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Addition)": #Addition
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] + checked_values[1]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Subtraction)": #Subtraction
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] - checked_values[1]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Multiplication)": #Multiplication
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] * checked_values[1]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Division)": #Division
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] / checked_values[1]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      print(checked_values[1], checked_values[0])
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Modulo)": #Modulo
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] % checked_values[1]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Max)": #Max
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       if checked_values[0] > checked_values[1]:
         computedValue = checked_values[0]
       else:
         computedValue = checked_values[1]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var[1] ==  f"{const.ARITHMETIC_OP} (Min)": #Min
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       if checked_values[0] > checked_values[1]:
         computedValue = checked_values[1]
       else:
         computedValue = checked_values[0]
-      exprStack.insert(0, (computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
 
      # //BOOLEAN OPERATIONS  
     elif var[1] ==  f"{const.BOOLEAN_OP} (AND operator)": #AND
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if var1 == True and var2 == True:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (OR operator)": #OR
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if var1 == True or var2 == True:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (XOR operator)": #XOR
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if (var1 == False and var2 == True) or (var2 == False and var1 == True):
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.insert(0, (const.FAIL, const.TROOF)) 
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal")) 
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (NOT operator)": #NOT
       var = boolean_type_check(exprStack.pop())
       if var == True:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (AND with Infinite Arity)":
     #INFINITE AND
@@ -133,9 +137,9 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checkFlag == False:
         pushVal = False
       if pushVal == True:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, "TROOF Literal"))
       elif pushVal == False:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, "TROOF Literal"))
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (OR with Infinite Arity)":
     #INFINITE OR
@@ -151,27 +155,27 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checkFlag == False:
         pushVal = False
       if pushVal == True:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       elif pushVal == False:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.COMPARISON_OP} (Not Equal)": #Not Equal to
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       if checked_values[0] != checked_values[1]:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.COMPARISON_OP} (Equal)": #Equal to
-      var2 = exprStack.pop()
       var1 = exprStack.pop()
+      var2 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       if checked_values[0] == checked_values[1]:
-        exprStack.insert(0, (const.WIN, const.TROOF))
+        exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.insert(0, (const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal")) 
   return exprStack.pop()
 
 
@@ -185,9 +189,12 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
 """
 def check_literal(child: tuple) -> tuple:
     if "." in child[0]:
-        return typecast.NUMBAR(child[0])
+        return ((float(child[0]), f"{const.NUMBAR} Literal"))
+    elif child[1] == f"{const.TROOF} Literal":
+        return((child[0], f"{const.TROOF} Literal"))
     else:
-        return typecast.NUMBR(child[0])
+        cleanchild = child[0].strip("\"")
+        return ((int(cleanchild), f"{const.NUMBR} Literal"))
 
 """
 * arith_type_check()
@@ -200,30 +207,31 @@ def check_literal(child: tuple) -> tuple:
 """
 def arith_type_check(var1: tuple, var2: tuple) -> list:
   #check if var1 is literal, numbar or numbr, then typecast
+
   value1 = 0
   value2 = 0
 
   #check var1
-  if var1[1] == const.LITERAL or var1[1] == const.NUMBAR or var1[1] == const.NUMBR:
+  if var1[1] == const.LITERAL or var1[1] == f"{const.NUMBAR} Literal" or var1[1] == f"{const.NUMBR} Literal":
     value1 = float(var1[0])
-  elif var1[1] == const.TROOF:
+  elif var1[1] == f"{const.TROOF} Literal":
     value1 = float(typecast.NUMBAR(var1[0])[0])
   elif var1[1] == const.NOOB:
     raise Exception(f"{const.NOOB} cannot be used in this operation") 
 
   #check var2
-  if var2[1] == const.LITERAL or var2[1] == const.NUMBAR or var2[1] == const.NUMBR:
+  if var2[1] == const.LITERAL or var2[1] == f"{const.NUMBAR} Literal" or var2[1] == f"{const.NUMBR} Literal":
     value2 = float(var2[0])
-  elif var2[1] == const.TROOF:
+  elif var2[1] == f"{const.TROOF} Literal":
     value2 = float(typecast.NUMBAR(var2[0])[0])
   elif var1[1] == const.NOOB:
     raise Exception(f"{const.NOOB} cannot be used in this operation") 
 
   #if both are NUMBRs, resulting value is a NUMBR, else it's a NUMBAR
-  if var1[1] == const.NUMBAR or var2[1] == const.NUMBAR:
-    answerType = const.NUMBAR
+  if var1[1] == f"{const.NUMBAR} Literal" or var2[1] == f"{const.NUMBAR} Literal":
+    answerType = f"{const.NUMBAR} Literal"
   else:
-    answerType = const.NUMBR
+    answerType = f"{const.NUMBR} Literal"
 
   #TODO: Casting Literals  
   return (value1, value2, answerType)
@@ -239,9 +247,9 @@ def arith_type_check(var1: tuple, var2: tuple) -> list:
 """
 def boolean_type_check(var: tuple) -> list:
   #check if var1 is literal, numbar or numbr, then typecast
-  if var[1] == const.LITERAL or var[1] == const.NUMBAR or var[1] == const.NUMBR:
+  if var[1] == const.LITERAL or var[1] == f"{const.NUMBAR} Literal" or var[1] == f"{const.NUMBR} Literal":
     casted = typecast.TROOF(var[0])
-  elif var[1] == const.TROOF:
+  elif var[1] == f"{const.TROOF} Literal":
     casted = var 
 
   if casted[0] == const.WIN:
