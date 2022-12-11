@@ -1,7 +1,5 @@
-import lexer
-import semantics
-from utility import syntax_storage as grammar
-from utility.node import Node
+from api.utility import syntax_storage as grammar
+from api.utility.node import Node
 
 """
 * parse()
@@ -18,20 +16,19 @@ def parse(lex):
     #error in comments
     if handle_comments[0] == False:
         # print error
-        print( f"🚀 ~ Error on Line {handle_comments[2]}: {handle_comments[1]}.")
+        raise Exception(f"🚀 ~ Syntax Error on Line {handle_comments[2]}: {handle_comments[1]}.")
 
     # no error in comments: parse the program
     else:
         lex = handle_comments[1]
         if lex==[]: 
-            print("Parsed Successfully")
-            return None
+            return (True, None)
         program = grammar.program_start(lex)
 
         # error in program start
         if program[0] == False:
             # print the error
-            print( f"🚀 ~ Error: {program[1]}.")
+            raise Exception(f"🚀 ~ Syntax Error: {program[1]}.")
         # no error in program start: iterate through the statements
         else:
             # Add the root node.
@@ -39,14 +36,13 @@ def parse(lex):
 
             lex = program[1]
             if lex==[]: 
-                print("Parsed Successfully")
                 return None
             statement = grammar.statement(lex, root_node)
 
             # error in the statement
             if (statement[0]) == False:
                 # print the error
-                print( f"🚀 ~ Error on Line {statement[2]}: {statement[1]}.")
+                raise Exception(f"🚀 ~ Syntax Error on Line {statement[2]}: {statement[1]}.")
             # no error: check if the lex is empty which means that the whole program is parsed
             else:
                 # check the length of the lex list
@@ -62,41 +58,31 @@ def parse(lex):
 
                     # error: print error; break the loop
                     if (mult_statement[0] == False):
-                        print( f"🚀 ~ Error on Line {mult_statement[2]}: {mult_statement[1]}.")
-                        break
+                        raise Exception(f"🚀 ~ Syntax Error on Line {mult_statement[2]}: {mult_statement[1]}.")
                     else:
                         # no error: check for the len of lex; update the lex
                         # if lex is empty: parsing is done and successful; end the loop
                         # else empty: continue with the loop
                         lex = mult_statement[1]
                         if len(lex) == 0:
-                            # print("Parsed Successfully")
                             recursion = False
-                            return root_node
+                            return (True, root_node)
                 # else empty: parsing done and successful
                 else:
-                    # print("Parsed Successfully")
-                    return root_node
+                    return (True, root_node)
 
-# Main Program
-if __name__ == "__main__":
+"""
+* analyze()
+| The main method to apply syntax
+| analysis to the program.
+"""
+def analyze(result: tuple):
   try:
-    # * Lexical Analyzer
-    code = []
-    with open("test/09_loops.lol", "r") as infile:
-        code = [line[:-1].strip() for line in infile.readlines()
-                if line[:-1].strip() != ""]
-    result = lexer.Lexer(code).analyze()
-    symbol_table = result[1]
-    if not result[0]:
-      raise Exception(result[1])
-
-    #* Uncomment to debug the lexer.
-    # if symbol_table != None:
-    #   print(f"Symbol Table: {symbol_table}")
-
-    # * Syntax Analyzer
+    # * Declaration
     lex = []
+    symbol_table = result[1]
+
+    # Merge each line separated by a dash.
     if result[0]:
       for k in symbol_table:
           for i in symbol_table[k]:
@@ -106,12 +92,6 @@ if __name__ == "__main__":
               if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
                       symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
                   lex.append(("Parser Delimiter", "-"))
-      node = parse(lex)
-    #   if node != None:
-    #     node.print_tree()
-      # * Semantics
-      analyzer = semantics.Semantics(node)
-      result = analyzer.analyze()
-      print(f"\nResult: {result}")
+    return parse(lex)
   except Exception as e:
-    print(str(e))
+    return (False, str(e))

@@ -1,4 +1,6 @@
 from api.lexer import Lexer
+from api import parser
+from api.semantics import Semantics
 
 from utility.gui.font import Font
 from utility.gui import helper
@@ -7,8 +9,8 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 
-import easygui_qt
 import utility.constants as const
+import api.utility.constants as api_const
 
 class App(QMainWindow):
   # * Properties
@@ -160,50 +162,67 @@ class App(QMainWindow):
   # Execute the code and display the
   # output in the terminal.
   def execute(self):
-    try:
-      # Get the code from the editor.
-      data = self._editor.toPlainText()
-      code = [d.strip() for d in data.split("\n") if d != ""]
+      try:
+          # Get the code from the editor.
+          data = self._editor.toPlainText()
+          code = [d.strip() for d in data.split("\n") if d != ""]
 
-      # Clear all tables and the terminal.
-      self._terminal.setText("")
-      self._lexeme_table.setRowCount(0);
-      self._lookup_table.setRowCount(0);
+          # Clear all tables and the terminal.
+          self._terminal.setText("")
+          self._lexeme_table.setRowCount(0)
+          self._lookup_table.setRowCount(0)
 
-      # * Lexical Analysis
-      lexer = Lexer(code)
-      lexer_result = lexer.analyze()
-      if not lexer_result[0]:
-        raise Exception(lexer_result[1])
+          # * Lexical Analysis
+          lexer = Lexer(code)
+          lexer_result = lexer.analyze()
+          if not lexer_result[0]:
+              raise Exception(lexer_result[1])
 
-      # Morph the table rows.
-      rows = []
-      for row in lexer_result[1].items():
-        for subrow in row[1]:
-          rows.append([subrow[0], subrow[1], str(row[0])])
-      self._lexeme_table.setRowCount(len(rows))
+          # Morph the table rows.
+          rows = []
+          for row in lexer_result[1].items():
+              for subrow in row[1]:
+                  rows.append([subrow[0], subrow[1], str(row[0])])
+          self._lexeme_table.setRowCount(len(rows))
 
-      # Display the item for each row.
-      for i in range(len(rows)):
-        for j in range(len(self._lexeme_cols)):
-          item = QTableWidgetItem(rows[i][j])
-          item.setFont(Font(11).regular)
-          self._lexeme_table.setItem(i, j, item)
-      
-      # Resize the rows & columns based on values.
-      self._lexeme_table.resizeColumnsToContents()
-      self._lexeme_table.resizeRowsToContents()
+          # Display the item for each row.
+          for i in range(len(rows)):
+              for j in range(len(self._lexeme_cols)):
+                  item = QTableWidgetItem(rows[i][j])
+                  item.setFont(Font(11).regular)
+                  self._lexeme_table.setItem(i, j, item)
 
-      # * Syntax Analysis
+          # Resize the rows & columns based on values.
+          self._lexeme_table.resizeColumnsToContents()
+          self._lexeme_table.resizeRowsToContents()
 
-      # * Semantic Analysis
+          # * Syntax Analysis
+          syntax_analyzer = parser.analyze(lexer_result)
+          if not syntax_analyzer[0]:
+            raise Exception(syntax_analyzer[1])
 
-      # * Uncomment this block for input.
-      # # Sample Input
-      # temp = easygui_qt.get_string(message="", title="GIMMEH")
-      # print(f"Input: {temp}")
-    except Exception as e:
-      self._terminal.setText(str(e))
+          # * Semantic Analysis
+          semantic_analyzer = Semantics(syntax_analyzer[1], self._terminal)
+          semantic_result = semantic_analyzer.analyze()
+          if not semantic_result[0]:
+            raise Exception(semantic_result[1])
+
+          # Display the contents of the lookup table.
+          rows = []
+          for row in semantic_result[1].items():
+            rows.append([row[0], str(row[1][api_const.VALUE_KEY]), row[1][api_const.TYPE_KEY].replace(api_const.LITERAL, "").strip()])
+          self._lookup_table.setRowCount(len(rows))
+
+          # Display the item for each row.
+          for i in range(len(rows)):
+            for j in range(len(self._lookup_cols)):
+              item = QTableWidgetItem(rows[i][j])
+              item.setFont(Font(11).regular)
+              self._lookup_table.setItem(i, j, item)
+          self._lookup_table.resizeColumnsToContents()
+          self._lookup_table.resizeRowsToContents()
+      except Exception as e:
+          self._terminal.setText(str(e))
     
   # Clear everything in the interface.
   def clear(self):

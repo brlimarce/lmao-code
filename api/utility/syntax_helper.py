@@ -3,8 +3,8 @@
 | Contains helper functions aside from the
 | grammar in syntax storage.
 """
-from utility import constants as const
-from utility import syntax_storage
+from api.utility import constants as const
+from api.utility import syntax_storage
 
 # Check if the list has no more elements.
 def is_end(lex):

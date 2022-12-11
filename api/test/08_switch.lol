@@ -1,7 +1,3 @@
-OBTW
-  Status: NOT WORKING
-  Remark/s: IT should support variables.
-TLDR
 HAI
 
 	I HAS A choice

@@ -17,13 +17,14 @@ I also use the same function for SMOOSH, it's
 still supported.
 """
 # To go outside the folder (relative path).
+from api.utility.node import Node
+from api.utility import constants as const
+from api.analyzers import variables
+from api.analyzers.concat import concat
+import easygui_qt
 import sys
 sys.path.append("../")
 
-from analyzers.concat import concat
-from analyzers import variables
-from utility import constants as const
-from utility.node import Node
 
 """
 * analyze_input()
@@ -37,18 +38,20 @@ from utility.node import Node
 | dict: The updated lookup table
 """
 def analyze_input(node: Node, lookup_table: dict) -> dict:
-  # Check if the variable exists.
-  varname = node.children[0].lexeme
-  if not variables.is_exist(varname, lookup_table):
-    raise Exception(f"{varname} does not exist.")
-  
-  # Ask for input.
-  temp = input()
-  lookup_table[varname] = {
-    const.VALUE_KEY: temp,
-    const.TYPE_KEY: const.YARN
-  }
-  return lookup_table
+    # Check if the variable exists.
+    varname = node.children[0].lexeme
+    if not variables.is_exist(varname, lookup_table):
+        raise Exception(f"{varname} does not exist.")
+
+    # Ask for input.
+    temp = easygui_qt.get_string(message="", title="GIMMEH")
+    lookup_table[varname] = {
+        const.VALUE_KEY: temp,
+        const.TYPE_KEY: const.YARN
+    }
+
+    return lookup_table
+
 
 """
 * analyze_output()
@@ -62,6 +65,7 @@ def analyze_input(node: Node, lookup_table: dict) -> dict:
 * Returns
 | dict: The updated lookup table
 """
-def analyze_output(node: Node, lookup_table: dict) -> dict:
-  print(concat(node.children, lookup_table))
-  return lookup_table
+def analyze_output(node: Node, lookup_table: dict, terminal) -> dict:
+    output = concat(node.children, lookup_table)
+    terminal.setText(f"{terminal.toPlainText()}\n{output}")
+    return lookup_table

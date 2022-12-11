@@ -9,7 +9,7 @@ def codearea(disabled=False) -> QTextEdit:
   textarea = QTextEdit()
   textarea.setStyleSheet(f"background-color: {const.BLACK}; color: {const.WHITE}; padding: 20px")
   textarea.setFont(Font(12).mono)
-  textarea.setDisabled(disabled)
+  textarea.setReadOnly(disabled)
   textarea.setTabStopDistance(8) # 2 spaces for 1 tab.
   
   # Return the component.
