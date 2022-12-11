@@ -83,7 +83,7 @@ if __name__ == "__main__":
   try:
     # * Lexical Analyzer
     code = []
-    with open("test/09_loops.lol", "r") as infile:
+    with open("test/05_bool.lol", "r") as infile:
         code = [line[:-1].strip() for line in infile.readlines()
                 if line[:-1].strip() != ""]
     result = lexer.Lexer(code).analyze()

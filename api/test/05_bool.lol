@@ -1,7 +1,7 @@
 OBTW
-  Status: NOT WORKING
+  Status: NOT FULLY WORKING
   Remark/s: (Error) -- Invalid assignment. NonType has no attribute `children`.
-  Need to check variable assignment on boolean operations.
+  NOT only works on standalone operations
 TLDR
 HAI
     BTW variable dec

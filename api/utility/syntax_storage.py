@@ -622,14 +622,21 @@ def operation(lex, root, operations, is_standalone):
     stack_cpy= stack[:]
     for s in range(len(stack_cpy)):
         if stack_cpy[s][1] in operations:
-            #first operand
             if stack[index-1][1] == "VALID":
                 pass
             elif stack[index-1][1] == varident():
                 pass
             elif stack[index-1][1] not in literal():
                 flag_value = False
-
+            if stack[index-2][1] == f"{const.BOOLEAN_OP} (NOT operator)":
+              if index == 1:
+                stack[index] = ("-","VALID")
+                stack.pop(index-1)
+                index = index - 1
+                break
+                
+                
+              
             #check for the delimiter of the operation
             if stack[index-2][1] != "Delimiter for Nested Expressions":
                 flag_value= False
@@ -641,13 +648,13 @@ def operation(lex, root, operations, is_standalone):
                 pass
             elif stack[index-3][1] not in literal(): 
                 flag_value= False
-            
+          
             if flag_value== True:
                 stack[index] = ("-","VALID")
                 stack.pop(index-1)
                 stack.pop(index-2)
                 stack.pop(index-3)
-                index = index - 3
+                index = index - 3 
             else:
                 break
         index= index+1
