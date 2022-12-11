@@ -187,6 +187,9 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
                 exprStack.append((const.WIN, f"{const.TROOF} Literal"))
             else:
                 exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
+    if exprStack[0][1] == f"{const.NUMBR} Literal":
+        tempStack = exprStack.pop()
+        exprStack.append((int(tempStack[0]),tempStack[1]))
     return exprStack.pop()
 
 
