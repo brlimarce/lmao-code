@@ -1,3 +1,7 @@
+OBTW
+  Status: WORKING
+  Remark/s: Wrong output
+TLDR
 HAI
     BTW variable dec
     I HAS A monde
@@ -5,11 +9,15 @@ HAI
     
     GIMMEH monde
 
-    VISIBLE SUM OF monde AN num
+    BTW VISIBLE SUM OF monde AN num
+    I HAS A sum ITZ SUM OF monde AN num
+    VISIBLE sum
     VISIBLE monde
 
     GIMMEH num
     GIMMEH monde
 
-    VISIBLE DIFF OF num AN monde
+    BTW VISIBLE DIFF OF num AN monde
+    I HAS A diff ITZ DIFF OF num AN monde
+    VISIBLE diff
 KTHXBYE

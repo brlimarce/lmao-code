@@ -83,7 +83,7 @@ if __name__ == "__main__":
   try:
     # * Lexical Analyzer
     code = []
-    with open("test/sample.lol", "r") as infile:
+    with open("test/03_arith.lol", "r") as infile:
         code = [line[:-1].strip() for line in infile.readlines()
                 if line[:-1].strip() != ""]
     result = lexer.Lexer(code).analyze()
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     if not result[0]:
       raise Exception(result[1])
 
-    # * Uncomment to debug the lexer.
+    #* Uncomment to debug the lexer.
     # if symbol_table != None:
     #   print(f"Symbol Table: {symbol_table}")
 
@@ -107,9 +107,8 @@ if __name__ == "__main__":
                       symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
                   lex.append(("Parser Delimiter", "-"))
       node = parse(lex)
-      # if node != None:
-      #   node.print_tree()
-
+    #   if node != None:
+    #     node.print_tree()
       # * Semantics
       analyzer = semantics.Semantics(node)
       result = analyzer.analyze()

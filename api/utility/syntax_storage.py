@@ -204,7 +204,7 @@ def expression(lex, root):
 
     # * Arithmetic, Comparison, Boolean, Relational
     if lex[0][1] in operations:
-        _operation = operation(lex, root, operations)
+        _operation = operation(lex, root, operations, False)
         if _operation[0] == True:
             lex = _operation[1]
             return (True, lex)
@@ -604,8 +604,16 @@ def break_block(lex, root, is_gtfo):
 * calls arithmvalue(), varident(), comparison(), relational(), arithmetic()
 | grammar for arithmetic operation
 """
-def operation(lex, root, operations, is_standalone = False):
-    _lex= deepcopy(lex[:])
+def operation(lex, root, operations, is_standalone):
+    _lex = []
+    for child in lex:
+      if len(child) == 3:
+        _lex.append(deepcopy(child))
+      else:
+        _lex.append(deepcopy(child))
+        break
+    
+    #_lex= deepcopy(lex[:])
     _lex.reverse()
     stack= _lex[1:]
     index=0
@@ -653,12 +661,13 @@ def operation(lex, root, operations, is_standalone = False):
       
     # Create a node for the operation block.
     opnode = Node(root, root, const.OP_BLOCK, const.OP_BLOCK)
-
+    
     # Add to the root if standalone statement.
     if is_standalone:
       for op in stack_cpy:
         opnode.add_child(op)
       root.add_child(opnode)
+    
     return(flag_value, lex[cnt:], root, stack_cpy)
 
 """

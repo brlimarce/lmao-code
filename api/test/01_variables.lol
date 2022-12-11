@@ -1,3 +1,8 @@
+OBTW
+  Status: WORKING
+  Remark/s: Has an extra input
+TLDR
+
 BTW start of the program
 HAI
     BTW variable dec
