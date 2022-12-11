@@ -2,15 +2,11 @@ HAI
   OBTW
   I HAS A thing ITZ 2
   thing IS NOW A NUMBAR
-  TLDR
-  I HAS A thing ITZ SUM OF 3 AN SUM OF 3 AN 5
-  SUM OF 3 AN 4
-  VISIBLE 3
-  VISIBLE "Hi"
   SMOOSH "it" AN "works"
-  I HAS A thing ITZ SMOOSH "hi" AN "hi"
-  VISIBLE "Hi"
-  SUM OF 3 AN 4
+  TLDR
+  BTW SUM OF 3 AN 4
+  I HAS A thing ITZ SUM OF 3 AN 4
+  BTW I HAS A thing2 ITZ SUM OF 3 AN 4
 KTHXBYE
 OBTW
 TLDR

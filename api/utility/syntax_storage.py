@@ -138,7 +138,7 @@ def codeblock(lex, root, is_gtfo=False):
     
     # * Concatenation
     if lex[0][1] == const.CONCAT:
-        _concat = concat(lex, root)
+        _concat = concat(lex, root, True)
         if _concat[0] == True:
             lex = _concat[1]
             return (True, lex)
@@ -177,6 +177,15 @@ def codeblock(lex, root, is_gtfo=False):
         return (True, lex)
       return (False, _break[1], lex[0][2])
     
+    # * Operation
+    if lex[0][1] in operations:
+        _operation = operation(lex, root, operations, True)
+        if _operation[0] == True:
+            lex = _operation[1]
+            return (True, lex)
+        else:
+            return (False, "Invalid operation", lex[0][2])
+    
     # * Expression
     else:
         _expression = expression(lex, root)
@@ -194,13 +203,6 @@ def expression(lex, root):
         return (True, lex)
 
     # * Arithmetic, Comparison, Boolean, Relational
-    operations= [f"{const.ARITHMETIC_OP} (Addition)", f"{const.ARITHMETIC_OP} (Subtraction)", f"{const.ARITHMETIC_OP} (Multiplication)",
-                f"{const.ARITHMETIC_OP} (Division)", f"{const.ARITHMETIC_OP} (Modulo)", f"{const.ARITHMETIC_OP} (Max)", 
-                f"{const.ARITHMETIC_OP} (Min)", f"{const.COMPARISON_OP} (Not Equal)", f"{const.COMPARISON_OP} (Equal)",
-                f"{const.BOOLEAN_OP} (AND operator)", f"{const.BOOLEAN_OP} (OR operator)", f"{const.BOOLEAN_OP} (XOR operator)",
-                f"{const.BOOLEAN_OP} (AND with Infinite Arity)", f"{const.BOOLEAN_OP} (OR with Infinite Arity)",  
-                f"{const.BOOLEAN_OP} (NOT operator)"]
-
     if lex[0][1] in operations:
         _operation = operation(lex, root, operations)
         if _operation[0] == True:
@@ -214,7 +216,7 @@ def expression(lex, root):
       _concat = concat(lex, root)
       if _concat[0]:
         lex = _concat[1]
-        return (True, lex, lex[0][2])
+        return (True, lex)
       return (False, "Invalid concatenation", lex[0][2])
 
     else:
@@ -316,10 +318,9 @@ def vardeclaration(lex, root):
 * concat()
 | grammar for concatenation
 """
-def concat(lex, root):
+def concat(lex, root, is_standalone=False):
     index = 0
     result = True
-    print("\n- - -\n", lex)
     
     for e in lex:
         if e[1] == const.DASH:
@@ -338,13 +339,14 @@ def concat(lex, root):
     # Throw an exception if there is nothing to concatenate.
     if index == 1:
       result = False
-
-    # # Translate into an AST.
-    # node = get_syntax_tree(lex[:index], root)
-    # root.add_child(node)
+    
+    # Add to the root if it is a standalone
+    # statement only.
+    if is_standalone:
+      node = get_syntax_tree(lex[:index], root)
+      root.add_child(node)
 
     lex = lex[index + 1:]
-    print("\n= = =\n", lex)
     return (result, lex, root)
 
 """
@@ -602,8 +604,8 @@ def break_block(lex, root, is_gtfo):
 * calls arithmvalue(), varident(), comparison(), relational(), arithmetic()
 | grammar for arithmetic operation
 """
-def operation(lex, root, operations):
-    _lex= lex[:]
+def operation(lex, root, operations, is_standalone = False):
+    _lex= deepcopy(lex[:])
     _lex.reverse()
     stack= _lex[1:]
     index=0
@@ -651,7 +653,13 @@ def operation(lex, root, operations):
       
     # Create a node for the operation block.
     opnode = Node(root, root, const.OP_BLOCK, const.OP_BLOCK)
-    return(flag_value, lex[cnt:], root, opnode)
+
+    # Add to the root if standalone statement.
+    if is_standalone:
+      for op in stack_cpy:
+        opnode.add_child(op)
+      root.add_child(opnode)
+    return(flag_value, lex[cnt:], root, stack_cpy)
 
 """
 * vardeclaration()
@@ -719,13 +727,11 @@ def abstraction(grammar, lex, root):
 
                 # Translate into an AST.
                 node = get_syntax_tree(lex[:index], root)
-                print("🚀 ~ file: syntax_storage.py:722 ~ lex[:index]", lex[:index])
                 root.add_child(node)
 
                 # Set the other needed values.
                 result = True
                 lex = lex[index + 1:]
-                print("🚀 ~ file: syntax_storage.py:727 ~ lex", lex)
                 break
             flag = True
             index = 0

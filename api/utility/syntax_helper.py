@@ -72,3 +72,11 @@ def evaluate_switch_code(lex_copy, root, sroot, default_flag = False):
   if not result[0]:
     return (result[0], result[1], root)
   return (True, lex_copy[index:], sroot)
+
+# Stores the list of operations (arithmetic, boolean, and comparison).
+operations= [f"{const.ARITHMETIC_OP} (Addition)", f"{const.ARITHMETIC_OP} (Subtraction)", f"{const.ARITHMETIC_OP} (Multiplication)",
+                f"{const.ARITHMETIC_OP} (Division)", f"{const.ARITHMETIC_OP} (Modulo)", f"{const.ARITHMETIC_OP} (Max)", 
+                f"{const.ARITHMETIC_OP} (Min)", f"{const.COMPARISON_OP} (Not Equal)", f"{const.COMPARISON_OP} (Equal)",
+                f"{const.BOOLEAN_OP} (AND operator)", f"{const.BOOLEAN_OP} (OR operator)", f"{const.BOOLEAN_OP} (XOR operator)",
+                f"{const.BOOLEAN_OP} (AND with Infinite Arity)", f"{const.BOOLEAN_OP} (OR with Infinite Arity)",  
+                f"{const.BOOLEAN_OP} (NOT operator)"]

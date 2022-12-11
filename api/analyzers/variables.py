@@ -19,7 +19,7 @@ sys.path.append("../")
 
 from utility import constants as const
 from utility.node import Node
-from analyzers import typecast
+from analyzers import typecast, expression
 
 """
 * analyze()
@@ -71,8 +71,8 @@ def analyze(node: Node, lookup_table: dict) -> dict:
       
       # Reassign the variable.
       lookup_table[varname] = {
-        const.VALUE_KEY: value,
-        const.TYPE_KEY: (children[0].type).replace(children[0].type, "").strip()
+        const.VALUE_KEY: lookup_table[temp_varname][const.VALUE_KEY],
+        const.TYPE_KEY: lookup_table[temp_varname][const.TYPE_KEY],
       }
 
     # * Value of IT
@@ -83,8 +83,11 @@ def analyze(node: Node, lookup_table: dict) -> dict:
       }
     # * Expressions
     else:
-      # TODO: Support expressions.
-      raise Exception("Expressions are not yet supported.")
+      result = expression.evaluate_expr(node.children[1:], lookup_table, True)
+      lookup_table[varname] = {
+        const.VALUE_KEY: result[0],
+        const.TYPE_KEY: result[1],
+      }
   return lookup_table
 
 """
