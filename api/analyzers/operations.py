@@ -19,6 +19,7 @@ from analyzers import typecast, variables
 def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
   terminal_child = len(node.children)
   exprStack = []
+  print(node.children)
   for childindex in range(0, terminal_child):
     var = node.children[childindex]
     #PUSHING VALUES TO STACK, either LITERAL or Variable
@@ -29,7 +30,16 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       exprStack.append(check_literal(var)) 
     elif variables.is_variable(var[1]):
       if variables.is_exist(var[0], lookup_table):
-        exprStack.append((float(lookup_table[var[0]][const.VALUE_KEY]), lookup_table[var[0]][const.TYPE_KEY]))
+        vartuple = (lookup_table[var[0]][const.VALUE_KEY], lookup_table[var[0]][const.TYPE_KEY])
+        print(vartuple)
+
+        if vartuple[1] == const.YARN:
+            pushvar =  (vartuple[0], f"{const.NUMBAR} Literal")
+        if vartuple[1] == const.TROOF:
+            pushvar = (vartuple[0], f"{const.TROOF} Literal")
+        else:
+          pushvar = vartuple
+        exprStack.append(pushvar)
       else: #catch unitialized variables
         raise Exception(f"Variable has not been initialized.")
     #OPERATIONS
@@ -109,6 +119,7 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (XOR operator)": #XOR
+      
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if (var1 == False and var2 == True) or (var2 == False and var1 == True):
@@ -117,7 +128,9 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         exprStack.append((const.FAIL, f"{const.TROOF} Literal")) 
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (NOT operator)": #NOT
+      print("NOT")
       var = boolean_type_check(exprStack.pop())
+      print(var)
       if var == True:
         exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
@@ -125,9 +138,11 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (AND with Infinite Arity)":
     #INFINITE AND
+      print("===========")
+      print(exprStack)
       vars = []
       while len(exprStack)>0:
-        vars = boolean_type_check(exprStack.pop())
+        vars.append(boolean_type_check(exprStack.pop()))
       checkFlag = False
       for value in vars:
         if value == False:
@@ -140,12 +155,14 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         exprStack.append((const.WIN, "TROOF Literal"))
       elif pushVal == False:
         exprStack.append((const.FAIL, "TROOF Literal"))
+      print(exprStack)
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (OR with Infinite Arity)":
     #INFINITE OR
+      print("===========")
       vars = []
       while len(exprStack)>0:
-        vars = boolean_type_check(exprStack.pop())
+        vars.append(boolean_type_check(exprStack.pop()))
       checkFlag = False
       for value in vars:
         if value == True:
@@ -155,8 +172,10 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checkFlag == False:
         pushVal = False
       if pushVal == True:
+        print("---")
         exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       elif pushVal == False:
+        print("---")
         exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
 
     elif var[1] ==  f"{const.COMPARISON_OP} (Not Equal)": #Not Equal to
@@ -175,7 +194,8 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checked_values[0] == checked_values[1]:
         exprStack.append((const.WIN, f"{const.TROOF} Literal"))
       else:
-        exprStack.append((const.FAIL, f"{const.TROOF} Literal")) 
+        exprStack.append((const.FAIL, f"{const.TROOF} Literal"))
+  print(exprStack) 
   return exprStack.pop()
 
 
@@ -232,7 +252,7 @@ def arith_type_check(var1: tuple, var2: tuple) -> list:
     answerType = f"{const.NUMBAR} Literal"
   else:
     answerType = f"{const.NUMBR} Literal"
-
+  
   #TODO: Casting Literals
   return (value1, value2, answerType)
 
