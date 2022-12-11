@@ -39,3 +39,8 @@ pip freeze > ../requirements.txt
 # ! Done when one of us decides to add a package.
 pip install -r ../requirements.txt
 ```
+### **🐱&ensp;Run the Program**
+To run the program, you must have your **VENV activated** and **packages installed.** *(see above)* Then, enter the following command:
+```
+python main.py
+```

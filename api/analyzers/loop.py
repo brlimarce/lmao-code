@@ -61,6 +61,7 @@ def analyze(node: Node, lookup_table: dict, executable) -> dict:
 
     # Run the loop until the condition is met.
     expr_node = children[5].children[0]
+    
     while True:
         flag = expression.evaluate_expr(expr_node, lookup_table)
         if (is_condition and flag[0] == const.WIN) or (not is_condition and flag[0] == const.FAIL):

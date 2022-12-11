@@ -86,8 +86,6 @@ def program_start(lex):
 * statement()
 | grammar of statement
 """
-
-
 def statement(lex, root):
     _codeblock = codeblock(lex, root)
     return _codeblock
@@ -97,8 +95,6 @@ def statement(lex, root):
 * codeblock()
 | grammar of codeblock
 """
-
-
 def codeblock(lex, root, is_gtfo=False):
     # statement= [["expression"],["loop"],["switch_case"],["ifthen"],["userinput"],
     # ["vardeclaration"],["print"],["typecasting"],["concatenation"],["assignment"]]
@@ -231,7 +227,7 @@ def expression(lex, root):
         _operation = operation(lex, root, operations, False)
         if _operation[0] == True:
             lex = _operation[1]
-            return (True, lex)
+            return (True, lex, _operation[3])
         else:
             return (False, "Invalid operation", lex[0][2])
 
@@ -297,7 +293,23 @@ def print_statement(lex, root):
                 Node(print_node, root, lex_copy[0][0], lex_copy[0][1]))
         # Expression
         else:
-            return (False, "Expressions are not yet supported.", root)
+            cnt=0
+            for i in lex_copy:
+                if i == ('Parser Delimiter', '-'):
+                    break
+                cnt=cnt+1
+            lex_len= len(lex_copy)-cnt
+            _lex= lex_copy[:]
+            if lex_len != 1:
+                _lex= lex_copy[:-(lex_len-1)]
+            _expression= expression(_lex, root)
+            if _expression[0] == False:
+                return (False, "Invalid Printing", root)
+            else:
+                print_node.add_child(_expression[2])
+                lex_copy= lex_copy[cnt+1:]
+                lex_copy.insert(0,('Parser Delimiter', '-'))
+                break
         lex_copy = lex_copy[1:]
     root.add_child(print_node)
     lex = lex_copy[1:]

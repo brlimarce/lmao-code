@@ -11,17 +11,13 @@ HAI
 
 	VISIBLE "Choice: "
 	GIMMEH choice
-  I HAS A diff ITZ 0
 
 	BOTH SAEM choice AN 1
 	O RLY?
 		YA RLY
 			VISIBLE "Enter birth year: "
 			GIMMEH input
-
-      diff R DIFF OF 2022 AN input
-      VISIBLE diff
-			BTW VISIBLE DIFF OF 2022 AN input
+			VISIBLE DIFF OF 2022 AN input
 OBTW
 	BTW uncomment this portion if you have MEBBE
 	BTW else, this portion should be ignored
@@ -40,7 +36,7 @@ TLDR
 		NO WAI
 			VISIBLE "Invalid Input!"
 	OIC
-  
+
 	DIFFRINT BIGGR OF 3 AN choice AN 3
 	O RLY?
 		YA RLY

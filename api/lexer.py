@@ -118,15 +118,3 @@ class Lexer:
     except Exception as e:
       # Return the error thrown.
       return (False, str(e))
-
-# * Note: Uncomment this code block if needed.
-if __name__ == '__main__':
-  code = []
-  # * NOTE: Replace `01_variables.lol` with your file name.
-  with open('test/input.lol', 'r') as infile:
-    for line in infile.readlines():
-      code.append(line[:-1].strip())
-  
-  # Instantiate the lexer.
-  lexer = Lexer(code)
-  print(lexer.analyze())

@@ -5,15 +5,11 @@ HAI
     
     GIMMEH monde
 
-    BTW VISIBLE SUM OF monde AN num
-    I HAS A sum ITZ SUM OF monde AN num
-    VISIBLE sum
+    VISIBLE SUM OF monde AN num
     VISIBLE monde
 
     GIMMEH num
     GIMMEH monde
 
-    BTW VISIBLE DIFF OF num AN monde
-    I HAS A diff ITZ DIFF OF num AN monde
-    VISIBLE diff
+    VISIBLE DIFF OF num AN monde
 KTHXBYE
