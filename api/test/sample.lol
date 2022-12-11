@@ -4,9 +4,8 @@ HAI
   thing IS NOW A NUMBAR
   SMOOSH "it" AN "works"
   TLDR
-  BTW SUM OF 3 AN 4
-  I HAS A thing ITZ SUM OF 3 AN 4
-  BTW I HAS A thing2 ITZ SUM OF 3 AN 4
+  SUM OF 3 AN 4
+  SMOOSH "hey" AN "sup"
 KTHXBYE
 OBTW
 TLDR

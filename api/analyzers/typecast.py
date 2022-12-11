@@ -73,7 +73,7 @@ def analyze(node: Node, lookup_table: dict) -> dict:
 # any -> NOOB (EXPLICIT)
 def NOOB(value) -> tuple:
   # NUMBR and NUMBAR Literals
-  if is_numbr(value)[0] or is_numbar(value)[0]:
+  if numbr(value)[0] or is_numbar(value)[0]:
     return (
       0 if is_numbr(value)[1] == 0 else 0.0,
       const.NUMBR if is_numbr(value)[0] else const.NUMBAR

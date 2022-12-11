@@ -1,6 +1,6 @@
 from utility import constants as const
 from utility.node import Node
-from analyzers import variables, io, typecast, conditional
+from analyzers import variables, io, typecast, conditional, expression
 import lexer
 from parser import parse
 
@@ -92,8 +92,14 @@ class Semantics:
   | child (Node): The child node
   """
   def codeblock(self, child: Node):
+    # * Operations
+    if child.type == const.OP_BLOCK:
+      self._lookup_table[const.IT] = expression.evaluate_expr(child, self._lookup_table)
+    # * String Concatenation
+    elif child.type == "String Concatenation":
+      self._lookup_table[const.IT] = expression.evaluate_expr(child, self._lookup_table)
     # * Variable Declaration
-    if child.type == "Variable Declaration":
+    elif child.type == "Variable Declaration":
       self._lookup_table = variables.analyze(child, self._lookup_table)
     # * Input
     elif child.type == "Input":
@@ -107,96 +113,3 @@ class Semantics:
     # * Explicit Typecasting
     elif child.type == "Explicit Typecasting":
       self._lookup_table = typecast.analyze(child, self._lookup_table)
-
-if __name__ == '__main__':
-  root = Node(None, None, "HAI", "Program Start")
-  
-  # # ** SWITCH STATEMENT **
-  # child1 = Node(root, root, "WTF?", "Start of SWITCH Case Statement")
-  # root.add_child(child1)
-
-  # child2 = Node(child1, child1, "OMG", "Keyword for the SWITCH Case Statement")
-  # child3 = Node(child2, child1, 4, "NUMBR Literal")
-  
-  # child1.add_child(child2)
-  # child2.add_child(child3)
-
-  # child7 = Node(child3, child1, "VISIBLE", "Output")
-  # child8 = Node(child7, child1, 2, "NUMBR Literal")
-
-  # child3.add_child(child7)
-  # child7.add_child(child8)
-
-  # child4 = Node(child1, child1, "OMG", "Keyword for the SWITCH Case Statement")
-  # child5 = Node(child4, child1, 3, "NUMBR Literal")
-
-  # child1.add_child(child4)
-  # child4.add_child(child5)
-
-  # child9 = Node(child3, child1, "VISIBLE", "Output")
-  # child10 = Node(child7, child1, "Same case but diff catch", "YARN Literal")
-
-  # child5.add_child(child9)
-  # child9.add_child(child10)
-
-  # child6 = Node(child1, child1, "OMGWTF", "Keyword for the Default Case")
-  # child1.add_child(child6)
-
-  # child10 = Node(child6, child1, "VISIBLE", "Output")
-  # child11 = Node(child10, child1, "Default Case", "YARN Literal")
-
-  # child6.add_child(child10)
-  # child10.add_child(child11)
-
-  # # ** IF-THEN STATEMENT **
-  # child1 = Node(root, root, "O_RLY?", "Start of IF-THEN Statement")
-  # root.add_child(child1)
-
-  # child2 = Node(child1, child1, "YA_RLY", "Keyword for the IF Case")
-  # child3 = Node(child1, child1, "NO_WAI", "Keyword for the ELSE Case")
-
-  # child1.add_child(child2)
-  # # child1.add_child(child3)
-
-  # # YA RLY
-  # child4 = Node(child2, child1, "VISIBLE", "Output")
-  # child5 = Node(child4, child1, "YAY, WIN", "TROOF Literal")
-
-  # child2.add_child(child4)
-  # child4.add_child(child5)
-
-  # # NO WAI
-  # child6 = Node(child3, child1, "VISIBLE", "Output")
-  # child7 = Node(child6, child1, "OH NO, FAIL", "TROOF Literal")
-
-  # child3.add_child(child6)
-  # child6.add_child(child7)
-
-  # * NOTE: Uncomment this code block
-  # * for the analyzer.
-  
-  # # * Lexical Analyzer
-  # code = []
-  # with open("test/input.lol", "r") as infile:
-  #     code = [line[:-1].strip() for line in infile.readlines()
-  #             if line[:-1].strip() != ""]
-  # result = lexer.Lexer(code).analyze()
-  # symbol_table = result[1]
-
-  # # * Syntax Analyzer
-  # lex = []
-  # for k in symbol_table:
-  #     for i in symbol_table[k]:
-  #         lex.append(i)
-  #     if symbol_table[k] != []:
-  #         if symbol_table[k][0][0] != "KTHXBYE" and symbol_table[k][0][0] != "OBTW" and \
-  #                 symbol_table[k][0][0] != "TLDR" and symbol_table[k][0][0] != "BTW":
-  #             lex.append(("Parser Delimiter", "-"))
-
-  # node = parse(lex)
-  # # node.print_tree()
-
-  # # * Semantics Analyzer
-  # analyzer = Semantics(root)
-  # result = analyzer.analyze()
-  # print(result)

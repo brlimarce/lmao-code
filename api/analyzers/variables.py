@@ -125,8 +125,11 @@ def analyze_assignment(node: Node, lookup_table: dict) -> dict:
       const.TYPE_KEY: lookup_table[value.lexeme][const.TYPE_KEY]
     }
   else:
-    # TODO: Support typecasting.
-    raise Exception(f"Expressions are not yet supported.")
+    result = expression.evaluate_expr(node.children[1:], lookup_table, True)
+    lookup_table[varname] = {
+      const.VALUE_KEY: result[0],
+      const.TYPE_KEY: result[1]
+    }
   return lookup_table
 
 """

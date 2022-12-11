@@ -13,6 +13,7 @@ HAI
     VISIBLE name
     VISIBLE fnum
     VISIBLE flag
+    VISIBLE "---"
 
     I HAS A sum ITZ SUM OF num AN 13
     I HAS A diff ITZ DIFF OF sum AN 17

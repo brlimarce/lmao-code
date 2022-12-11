@@ -26,9 +26,11 @@ def evaluate_expr(children, lookup_table: dict, is_nested=False) -> tuple:
 
   # Perform the operation.
   # * Smoosh
-  if children[0].type == "String Concatenation":
+  if node.type == "String Concatenation":
     result = concat.analyze_concat(node, lookup_table)
   # * Operations
+  elif node.type == const.OP_BLOCK:
+    result = operations.analyze(node, lookup_table, lookup_table)
   else:
     raise Exception("Invalid expression")
   return result
@@ -45,10 +47,8 @@ def convert_smoosh(children: list) -> Node:
 def convert_op(children: list) -> Node:
   node = Node(None, None, const.OP_BLOCK, const.OP_BLOCK)
   block = deepcopy(children)
-  stack = []
 
   # Convert into a tuple.
   for i in range(len(block) - 1, -1, -1):
-    stack.append((children[i].lexeme, children[i].type))
-  node._children = stack
+    node.add_child((children[i].lexeme, children[i].type))
   return node

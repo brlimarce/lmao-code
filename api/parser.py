@@ -70,12 +70,12 @@ def parse(lex):
                         # else empty: continue with the loop
                         lex = mult_statement[1]
                         if len(lex) == 0:
-                            print("Parsed Successfully")
+                            # print("Parsed Successfully")
                             recursion = False
                             return root_node
                 # else empty: parsing done and successful
                 else:
-                    print("Parsed Successfully")
+                    # print("Parsed Successfully")
                     return root_node
 
 # Main Program
@@ -113,6 +113,6 @@ if __name__ == "__main__":
       # * Semantics
       analyzer = semantics.Semantics(node)
       result = analyzer.analyze()
-      print(f"Result: {result}")
+      print(f"\nResult: {result}")
   except Exception as e:
     print(str(e))
