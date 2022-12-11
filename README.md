@@ -2,7 +2,7 @@
 <img src="assets/banner.png"> <br />
 
 <p align="center"> 🐱&ensp;An esoteric programming interpreter </p>
-<hr /> <br />
+<hr />
 
 <!-- Installation -->
 ### **🍃&ensp;Virtual Environment**
@@ -24,8 +24,6 @@ venv/Scripts/activate # Windows
 # 4. Turn off your VENV.
 deactivate
 ```
-<br />
-
 ### **📤&ensp;Dependencies**
 To install packages, **run VENV first** *(see Section A).* Then, **update requirements.txt** after installing that package.
 
