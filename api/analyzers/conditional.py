@@ -67,20 +67,31 @@ def analyze_ifthen(node: Node, lookup_table: dict) -> tuple:
 | Return the code block based on the
 | satisfied switch condition
 """
-def analyze_switch(node: Node, it_value: dict) -> list:
+def analyze_switch(node: Node, it_value: dict, executable) -> list:
   # Run through the cases.
   code = []
   DEFAULT_TYPE = "Keyword for the Default Case"
-
+  is_gtfo = False
+  
   for case in node.children:
     if case.type != DEFAULT_TYPE:
       # Check if the value matches.
-      # TODO: Support GTFO
-      value = case.children[0].lexeme
+      value = case.children[0].lexeme.replace("\"", "")
+      block = case.children[1:]
+      
+      # Execute the code block.
       if value == it_value:
-        code.append(case.children[0].children)
-  
+        for child in block:
+          if child.type == "Loop Break":
+            is_gtfo = True
+            break
+          executable.codeblock(child)
     # Run the DEFAULT case (if applicable).
     elif case.type == DEFAULT_TYPE and len(code) < 1:
-      code.append(case.children)
-  return code
+      block = case.children[1:]
+      for child in block:
+        executable.codeblock(child)
+    
+    # End the loop on GTFO keyword.
+    if is_gtfo:
+      break

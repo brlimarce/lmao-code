@@ -26,7 +26,7 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       exprStack.insert(0, check_literal(var)) 
     elif variables.is_variable(var[1]):
       if variables.is_exist(var[0], lookup_table):
-        exprStack.insert(0, (lookup_table[var[0]][const.VALUE_KEY], lookup_table[var[0]][const.TYPE_KEY]))
+        exprStack.insert(0, (lookup_table[var[0]][const.VALUE_KEY], lookup_table[var[0]][const.TYPE_KEY].replace("Literal", "").strip()))
       else: #catch unitialized variables
         raise Exception(f"Variable has not been initialized.")
     #OPERATIONS
@@ -163,7 +163,7 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         exprStack.insert(0, (const.WIN, const.TROOF))
       else:
         exprStack.insert(0, (const.FAIL, const.TROOF))
-
+    
     elif var[1] ==  f"{const.COMPARISON_OP} (Equal)": #Equal to
       var2 = exprStack.pop()
       var1 = exprStack.pop()
@@ -225,7 +225,7 @@ def arith_type_check(var1: tuple, var2: tuple) -> list:
   else:
     answerType = const.NUMBR
 
-  #TODO: Casting Literals  
+  #TODO: Casting Literals
   return (value1, value2, answerType)
 
 """

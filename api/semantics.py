@@ -1,6 +1,6 @@
 from utility import constants as const
 from utility.node import Node
-from analyzers import variables, io, typecast, conditional, expression
+from analyzers import variables, io, typecast, conditional, expression, loop
 import lexer
 from parser import parse
 
@@ -65,11 +65,10 @@ class Semantics:
               self.codeblock(code)
         # * SWITCH-CASE Statement
         elif child.type == "Start of SWITCH Case Statement":
-          result = conditional.analyze_switch(child, self._lookup_table[const.IT][const.VALUE_KEY])
-          if result != None:
-            for code in result:
-              for statements in code:
-                self.codeblock(statements)
+          conditional.analyze_switch(child, self._lookup_table[const.IT][const.VALUE_KEY], self)
+        # * Loop
+        elif child.type == "Start of Loop":
+          self._lookup_table = loop.analyze(child, self._lookup_table, self)
         # * Expression
         else:
           self.codeblock(child)

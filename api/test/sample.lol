@@ -1,11 +1,16 @@
+BTW start of the program
 HAI
-  OBTW
-  I HAS A thing ITZ 2
-  thing IS NOW A NUMBAR
-  SMOOSH "it" AN "works"
-  TLDR
-  SUM OF 3 AN 4
-  SMOOSH "hey" AN "sup"
+  GIMMEH IT
+  WTF?
+    OMG "2"
+      VISIBLE "Hi"
+      VISIBLE "hey"
+      GTFO
+    OMG "3"
+      VISIBLE "Hey"
+    OMG "4"
+      VISIBLE "Sup"
+    OMGWTF
+      VISIBLE "DEFAULT CASE"
+  OIC
 KTHXBYE
-OBTW
-TLDR
