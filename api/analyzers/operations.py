@@ -30,10 +30,9 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
     elif variables.is_variable(var[1]):
       if variables.is_exist(var[0], lookup_table):
         vartuple = (lookup_table[var[0]][const.VALUE_KEY], lookup_table[var[0]][const.TYPE_KEY])
-
         if vartuple[1] == const.YARN:
-            pushvar =  (vartuple[0], f"{const.NUMBAR} Literal")
-        if vartuple[1] == const.TROOF:
+            pushvar =  (float(vartuple[0]), f"{const.NUMBAR} Literal")
+        elif vartuple[1] == const.TROOF:
             pushvar = (vartuple[0], f"{const.TROOF} Literal")
         else:
           pushvar = vartuple
