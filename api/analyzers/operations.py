@@ -9,11 +9,9 @@ from analyzers import typecast, variables
 * analyze()
 | The main method to analyze variable
 | declaration and initialization.
-
 * Parameters
 | node (Node): The parent node
 | lookup_table (dict): The lookup table
-
 * Returns
 | value: computed value for the expression
 """
@@ -25,10 +23,10 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
     var = node.children[childindex]
     #PUSHING VALUES TO STACK, either LITERAL or Variable
     if typecast.is_literal(var.type):
-      exprStack.push(check_literal(var)) 
+      exprStack.append(check_literal(var)) 
     elif typecast.is_variable(var.type):
       if variables.is_exist(var.lexeme, lookup_table):
-        exprStack.push((lookup_table[var.lexeme][const.VALUE_KEY], lookup_table[var.lexeme][const.TYPE_KEY]))
+        exprStack.append((lookup_table[var.lexeme][const.VALUE_KEY], lookup_table[var.lexeme][const.TYPE_KEY]))
       else: #catch unitialized variables
         raise Exception(f"Variable has not been initialized.")
     #OPERATIONS
@@ -39,35 +37,35 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] + checked_values[1]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var ==  f"{const.ARITHMETIC_OP} (Subtraction)": #Subtraction
       var2 = exprStack.pop()
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] + checked_values[1]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var ==  f"{const.ARITHMETIC_OP} (Multiplication)": #Multiplication
       var2 = exprStack.pop()
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] + checked_values[1]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var ==  f"{const.ARITHMETIC_OP} (Division)": #Division
       var2 = exprStack.pop()
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] + checked_values[1]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var ==  f"{const.ARITHMETIC_OP} (Modulo)": #Modulo
       var2 = exprStack.pop()
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       computedValue = checked_values[0] % checked_values[1]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var ==  f"{const.ARITHMETIC_OP} (Max)": #Max
       var2 = exprStack.pop()
@@ -77,7 +75,7 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         computedValue = checked_values[0]
       else:
         computedValue = checked_values[1]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
       
     elif var ==  f"{const.ARITHMETIC_OP} (Min)": #Min
       var2 = exprStack.pop()
@@ -87,39 +85,39 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
         computedValue = checked_values[1]
       else:
         computedValue = checked_values[0]
-      exprStack.push((computedValue, checked_values[2]))
+      exprStack.append((computedValue, checked_values[2]))
 
      # //BOOLEAN OPERATIONS  
     elif var ==  f"{const.BOOLEAN_OP} (AND operator)": #AND
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if var1 == True or var2 == True:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       else:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
 
     elif var ==  f"{const.BOOLEAN_OP} (OR operator)": #OR
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if var1 == True or var2 == True:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       else:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
 
     elif var ==  f"{const.BOOLEAN_OP} (XOR operator)": #XOR
       var2 = boolean_type_check(exprStack.pop())
       var1 = boolean_type_check(exprStack.pop())
       if (var1 == False and var2 == True) or (var2 == False and var1 == True):
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       else:
-        exprStack.push((const.FAIL, const.TROOF)) 
+        exprStack.append((const.FAIL, const.TROOF)) 
 
     elif var ==  f"{const.BOOLEAN_OP} (NOT operator)": #NOT
       var = boolean_type_check(exprStack.pop())
       if var == True:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       else:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
 
     elif var ==  f"{const.BOOLEAN_OP} (AND with Infinite Arity)":
     #INFINITE AND
@@ -135,9 +133,9 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checkFlag == False:
         pushVal = False
       if pushVal == True:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       elif pushVal == False:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
 
     elif var ==  f"{const.BOOLEAN_OP} (OR with Infinite Arity)":
     #INFINITE OR
@@ -153,27 +151,27 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checkFlag == False:
         pushVal = False
       if pushVal == True:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       elif pushVal == False:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
 
     elif var ==  f"{const.COMPARISON_OP} (Not Equal)": #Not Equal to
       var2 = exprStack.pop()
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       if checked_values[0] != checked_values[1]:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       else:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
 
     elif var ==  f"{const.COMPARISON_OP} (Equal)": #Equal to
       var2 = exprStack.pop()
       var1 = exprStack.pop()
       checked_values = arith_type_check(var1, var2)
       if checked_values[0] == checked_values[1]:
-        exprStack.push((const.WIN, const.TROOF))
+        exprStack.append((const.WIN, const.TROOF))
       else:
-        exprStack.push((const.FAIL, const.TROOF))
+        exprStack.append((const.FAIL, const.TROOF))
   return exprStack.pop()
 
 
@@ -195,10 +193,8 @@ def check_literal(child: tuple) -> tuple:
 * arith_type_check()
 | The method to check and properly typecast
 | the values in an arithmetic operation
-
 * Parameters
 | var1 and var2: the values to be used in the arithmetic operation
-
 * Returns
 | list: contains the converted values and the final typecast the value will have
 """
@@ -234,10 +230,8 @@ def arith_type_check(var1: tuple, var2: tuple) -> list:
 * boolean_type_check()
 | The method to check and properly typecast
 | a value in a boolean operation
-
 * Parameters
 | var1: the values to be used in the boolean operation
-
 * Returns
 | boolVal: boolean representation of WIN and FAIL
 """
