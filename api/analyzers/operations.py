@@ -144,9 +144,9 @@ def analyze(node: Node, lookup_table: dict, expressions_table: dict) -> tuple:
       if checkFlag == False:
         pushVal = False
       if pushVal == True:
-        exprStack.append((const.WIN, "TROOF Literal"))
-      elif pushVal == False:
         exprStack.append((const.FAIL, "TROOF Literal"))
+      elif pushVal == False:
+        exprStack.append((const.WIN, "TROOF Literal"))
 
     elif var[1] ==  f"{const.BOOLEAN_OP} (OR with Infinite Arity)":
     #INFINITE OR

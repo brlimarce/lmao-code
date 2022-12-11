@@ -13,7 +13,6 @@ import re
 | C. Descriptor in the symbol table
 """
 
-# TODO: Delete the grammar name (second element).
 token_regex = [
   (re.compile(r"^HAI\b"), "hai", "Program Start"),
   (re.compile(r"^KTHXBYE\b"), "kthxbye", "Program End"),
@@ -50,8 +49,8 @@ token_regex = [
   (re.compile(r"\bBOTH OF\b"), "bool and", f"{const.BOOLEAN_OP} (AND operator)"),
   (re.compile(r"\bEITHER OF\b"), "bool or", f"{const.BOOLEAN_OP} (OR operator)"),
   (re.compile(r"\bWON OF\b"), "bool xor", f"{const.BOOLEAN_OP} (XOR operator)"),
-  (re.compile(r"\bANY OF\b"), "bool inf and", f"{const.BOOLEAN_OP} (AND with Infinite Arity)"),
-  (re.compile(r"\bALL OF\b"), "bool inf or", f"{const.BOOLEAN_OP} (OR with Infinite Arity)"),
+  (re.compile(r"\bALL OF\b"), "bool inf and", f"{const.BOOLEAN_OP} (AND with Infinite Arity)"),
+  (re.compile(r"\bANY OF\b"), "bool inf or", f"{const.BOOLEAN_OP} (OR with Infinite Arity)"),
   (re.compile(r"\bBOTH SAEM\b"), "equal to", f"{const.COMPARISON_OP} (Equal)"),
   (re.compile(r"^\bIS NOW A\b"), "is now a", "Delimiter for Typecasting"),
   (re.compile(r"^O RLY\?\B"), "start if-else", "Start of IF-THEN Statement"),

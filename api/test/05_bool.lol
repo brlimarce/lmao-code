@@ -24,10 +24,6 @@ HAI
     VISIBLE boolval
     boolval R ANY OF y AN y AN y AN 0 MKAY
     VISIBLE boolval
-    boolval R ANY OF BOTH OF x AN EITHER OF NOT x AN y AN y AN NOT y MKAY
-    VISIBLE boolval
-    boolval R BOTH OF x AN EITHER OF NOT x AN y
-    VISIBLE boolval
 
     OBTW
     VISIBLE BOTH OF x AN y
@@ -36,8 +32,6 @@ HAI
     VISIBLE NOT x
     VISIBLE ALL OF x AN x AN x AN y MKAY
     VISIBLE ANY OF y AN y AN y AN 0 MKAY
-    VISIBLE ANY OF BOTH OF x AN EITHER OF NOT x AN y AN y AN NOT y MKAY
-    VISIBLE BOTH OF x AN EITHER OF NOT x AN y
     TLDR
 
     VISIBLE "x:" FAIL ", y:" WIN
@@ -55,10 +49,6 @@ HAI
     VISIBLE boolval
     boolval R ANY OF y AN y AN y AN 0 MKAY
     VISIBLE boolval
-    boolval R ANY OF BOTH OF x AN EITHER OF NOT x AN y AN y AN NOT y MKAY
-    VISIBLE boolval
-    boolval R BOTH OF x AN EITHER OF NOT x AN y
-    VISIBLE boolval
 
     OBTW
     VISIBLE BOTH OF x AN y
@@ -67,8 +57,6 @@ HAI
     VISIBLE NOT x
     VISIBLE ALL OF x AN x AN x AN y MKAY
     VISIBLE ANY OF y AN y AN y AN 0 MKAY
-    VISIBLE ANY OF BOTH OF x AN EITHER OF NOT x AN y AN y AN NOT y MKAY
-    VISIBLE BOTH OF x AN EITHER OF NOT x AN y
     TLDR
 
     VISIBLE "x:" FAIL ", y:" FAIL
@@ -86,10 +74,6 @@ HAI
     VISIBLE boolval
     boolval R ANY OF y AN y AN y AN 0 MKAY
     VISIBLE boolval
-    boolval R ANY OF BOTH OF x AN EITHER OF NOT x AN y AN y AN NOT y MKAY
-    VISIBLE boolval
-    boolval R BOTH OF x AN EITHER OF NOT x AN y
-    VISIBLE boolval
 
     OBTW
     VISIBLE BOTH OF x AN y
@@ -98,7 +82,5 @@ HAI
     VISIBLE NOT x
     VISIBLE ALL OF x AN x AN x AN y MKAY
     VISIBLE ANY OF y AN y AN y AN 0 MKAY
-    VISIBLE ANY OF BOTH OF x AN EITHER OF NOT x AN y AN y AN NOT y MKAY
-    VISIBLE BOTH OF x AN EITHER OF NOT x AN y
     TLDR
 KTHXBYE
