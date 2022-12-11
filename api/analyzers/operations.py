@@ -9,11 +9,9 @@ from analyzers import typecast, variables
 * analyze()
 | The main method to analyze variable
 | declaration and initialization.
-
 * Parameters
 | node (Node): The parent node
 | lookup_table (dict): The lookup table
-
 * Returns
 | value: computed value for the expression
 """
@@ -195,10 +193,8 @@ def check_literal(child: tuple) -> tuple:
 * arith_type_check()
 | The method to check and properly typecast
 | the values in an arithmetic operation
-
 * Parameters
 | var1 and var2: the values to be used in the arithmetic operation
-
 * Returns
 | list: contains the converted values and the final typecast the value will have
 """
@@ -236,10 +232,8 @@ def arith_type_check(var1: tuple, var2: tuple) -> list:
 * boolean_type_check()
 | The method to check and properly typecast
 | a value in a boolean operation
-
 * Parameters
 | var1: the values to be used in the boolean operation
-
 * Returns
 | boolVal: boolean representation of WIN and FAIL
 """
